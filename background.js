@@ -617,7 +617,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       else if (message.type === 'OPEN_TRANSLATE_TAB') {
         if (message.text) {
-          const translateUrl = `https://translate.google.com/?sl=auto&tl=tr&text=${encodeURIComponent(message.text)}&op=translate`;
+          const { appLang = 'tr' } = await chrome.storage.local.get('appLang');
+          const targetLang = appLang === 'en' ? 'en' : 'tr';
+          const translateUrl = `https://translate.google.com/?sl=auto&tl=${targetLang}&text=${encodeURIComponent(message.text)}&op=translate`;
           const currentTab = sender.tab;
           await chrome.tabs.create({
             url: translateUrl,

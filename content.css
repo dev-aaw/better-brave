@@ -338,3 +338,33 @@
   resize: vertical;
   outline: none;
 }
+mark[class*="pdf-highlight-"] {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 1px 2px;
+  transition: filter 0.15s, box-shadow 0.15s;
+}
+
+mark[class*="pdf-highlight-"]:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+.gx-remove-highlight-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  color: #f87171;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+}
+
+.gx-remove-highlight-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
