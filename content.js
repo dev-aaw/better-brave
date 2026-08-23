@@ -101,55 +101,284 @@ function notifyMediaPlaybackState(isPlaying) {
 });
 
 
-// --- 2. PDF / WEB NOT ALMA VE METIN HIGHLIGHT ---
-let annotatorToolbar = null;
+// --- 2. OPERA GX TARZI HIZLI METIN SEÇİM MENÜSÜ & ÇEVİRİ & DÖNÜŞTÜRÜCÜ & NOTLAR ---
+let selectionPopup = null;
 let savedRange = null;
+let currentSelectedText = '';
 
 function getStorageKey() {
-  return `annot_${encodeURIComponent(window.location.origin + window.location.pathname)}`;
+  return 'notes_' + encodeURIComponent(window.location.origin + window.location.pathname);
 }
 
-function getOrCreateAnnotatorToolbar() {
-  if (annotatorToolbar && document.body.contains(annotatorToolbar)) return annotatorToolbar;
+// 🧠 Akıllı Dönüştürücü & Hesaplayıcı (Para Birimi, Birimler, Saat, Matematik)
+function getSmartInsight(text) {
+  if (!text) return null;
+  const trimmed = text.trim();
+  if (trimmed.length > 50) return null;
 
-  const bar = document.createElement('div');
-  bar.className = 'pdf-annotator-toolbar';
-  bar.innerHTML = `
-    <button class="pdf-tool-btn" data-color="yellow" title="Sarı Vurgula"><span class="color-swatch swatch-yellow"></span></button>
-    <button class="pdf-tool-btn" data-color="blue" title="Mavi Vurgula"><span class="color-swatch swatch-blue"></span></button>
-    <button class="pdf-tool-btn" data-color="green" title="Yeşil Vurgula"><span class="color-swatch swatch-green"></span></button>
-    <button class="pdf-tool-btn" id="pdfAddNoteBtn" title="Not Ekle">📝</button>
-    <button class="pdf-tool-btn" id="pdfExportBtn" title="Notları Dışa Aktar">💾</button>
+  // 1. Matematik Hesaplama (Örn: "120 * 4", "50 + 25 / 5", "100 * 1.20")
+  if (/^[\d\s\+\-\*/\(\)\.\,]+$/.test(trimmed) && /[\+\-\*/]/.test(trimmed) && /\d/.test(trimmed)) {
+    try {
+      const sanitized = trimmed.replace(/,/g, '.');
+      // Secure safe basic calculation
+      const mathResult = Function('"use strict"; return (' + sanitized + ')')();
+      if (typeof mathResult === 'number' && !isNaN(mathResult) && isFinite(mathResult)) {
+        return { icon: '🧮', text: `= ${Number(mathResult.toFixed(4))}` };
+      }
+    } catch (e) {}
+  }
+
+  // 2. Para Birimi (USD, EUR, GBP, JPY -> TRY)
+  const currencyMatch = trimmed.match(/^([$€£¥₺])\s*([\d,.]+)|([\d,.]+)\s*(usd|eur|gbp|jpy|try|tl|dolar|euro|sterlin)$/i);
+  if (currencyMatch) {
+    const sym = (currencyMatch[1] || currencyMatch[4] || '').toLowerCase();
+    const numStr = (currencyMatch[2] || currencyMatch[3] || '').replace(/,/g, '');
+    const val = parseFloat(numStr);
+    if (!isNaN(val) && val > 0) {
+      if (sym === '$' || sym === 'usd' || sym === 'dolar') {
+        return { icon: '💱', text: `$${val} ≈ ${Math.round(val * 37.5).toLocaleString('tr-TR')} ₺` };
+      }
+      if (sym === '€' || sym === 'eur' || sym === 'euro') {
+        return { icon: '💱', text: `€${val} ≈ ${Math.round(val * 40.8).toLocaleString('tr-TR')} ₺` };
+      }
+      if (sym === '£' || sym === 'gbp' || sym === 'sterlin') {
+        return { icon: '💱', text: `£${val} ≈ ${Math.round(val * 48.2).toLocaleString('tr-TR')} ₺` };
+      }
+      if (sym === '¥' || sym === 'jpy') {
+        return { icon: '💱', text: `¥${val} ≈ ${Math.round(val * 0.25).toLocaleString('tr-TR')} ₺` };
+      }
+    }
+  }
+
+  // 3. Ölçü Birimleri (lbs, miles, ft, in, fahrenheit)
+  const lbsMatch = trimmed.match(/^([\d,.]+)\s*(lbs?|pounds?)$/i);
+  if (lbsMatch) {
+    const val = parseFloat(lbsMatch[1].replace(/,/g, ''));
+    if (!isNaN(val)) return { icon: '⚖️', text: `${val} lbs = ${(val * 0.453592).toFixed(1)} kg` };
+  }
+
+  const milesMatch = trimmed.match(/^([\d,.]+)\s*(miles?|mi)$/i);
+  if (milesMatch) {
+    const val = parseFloat(milesMatch[1].replace(/,/g, ''));
+    if (!isNaN(val)) return { icon: '📏', text: `${val} mi = ${(val * 1.60934).toFixed(1)} km` };
+  }
+
+  const feetMatch = trimmed.match(/^(\d+)\s*(?:ft|feet|'|’)\s*(?:(\d+)\s*(?:in|inches|"|”))?$/i);
+  if (feetMatch) {
+    const ft = parseInt(feetMatch[1], 10);
+    const inch = parseInt(feetMatch[2] || '0', 10);
+    const totalCm = Math.round(ft * 30.48 + inch * 2.54);
+    return { icon: '📏', text: `${trimmed} = ${totalCm} cm` };
+  }
+
+  const fahrMatch = trimmed.match(/^([\d,.]+)\s*(?:°\s*f|f|fahrenheit)$/i);
+  if (fahrMatch) {
+    const val = parseFloat(fahrMatch[1].replace(/,/g, ''));
+    if (!isNaN(val)) return { icon: '🌡️', text: `${val}°F = ${Math.round((val - 32) * 5 / 9)}°C` };
+  }
+
+  return null;
+}
+
+// 🌐 Google Çeviri API
+async function fetchTranslation(text) {
+  try {
+    const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=tr&dt=t&q=${encodeURIComponent(text)}`);
+    if (!res.ok) throw new Error('Translate fetch error');
+    const data = await res.json();
+    if (data && data[0] && Array.isArray(data[0])) {
+      const translated = data[0].map(item => item[0]).filter(Boolean).join('');
+      return translated || null;
+    }
+  } catch (e) {}
+  return null;
+}
+
+function getOrCreateSelectionPopup() {
+  if (selectionPopup && document.body.contains(selectionPopup)) return selectionPopup;
+
+  const popup = document.createElement('div');
+  popup.className = 'gx-selection-popup';
+  popup.innerHTML = `
+    <div class="gx-smart-insight-bar" id="gxSmartBar" style="display: none;">
+      <span class="gx-smart-icon" id="gxSmartIcon">💱</span>
+      <span class="gx-smart-text" id="gxSmartText">--</span>
+    </div>
+
+    <div class="gx-popup-actions-row">
+      <button type="button" class="gx-action-btn" id="gxSearchBtn" title="Web'de Ara">
+        <span class="gx-btn-icon">🔍</span>
+        <span class="gx-btn-label">Ara</span>
+      </button>
+
+      <button type="button" class="gx-action-btn" id="gxCopyBtn" title="Metni Kopyala">
+        <span class="gx-btn-icon">📋</span>
+        <span class="gx-btn-label">Kopyala</span>
+      </button>
+
+      <button type="button" class="gx-action-btn" id="gxTranslateBtn" title="Türkçeye Çevir">
+        <span class="gx-btn-icon">🌐</span>
+        <span class="gx-btn-label">Çevir</span>
+      </button>
+
+      <div class="gx-popup-divider"></div>
+
+      <div class="gx-highlighter-group">
+        <button type="button" class="gx-color-btn swatch-yellow" data-color="yellow" title="Sarı Vurgula"></button>
+        <button type="button" class="gx-color-btn swatch-blue" data-color="blue" title="Mavi Vurgula"></button>
+        <button type="button" class="gx-color-btn swatch-green" data-color="green" title="Yeşil Vurgula"></button>
+      </div>
+
+      <button type="button" class="gx-action-btn-icon-only" id="gxStickyNoteBtn" title="Not Ekle">
+        <span>📝</span>
+      </button>
+
+      <button type="button" class="gx-action-btn-icon-only" id="gxExportNotesBtn" title="Notları Dışa Aktar (.md)">
+        <span>💾</span>
+      </button>
+    </div>
+
+    <div class="gx-translation-card" id="gxTransCard" style="display: none;">
+      <div class="gx-trans-header">
+        <span class="gx-trans-lang-badge">🇹🇷 Türkçe Çeviri</span>
+        <button type="button" class="gx-trans-close-btn" id="gxCloseTransBtn">✕</button>
+      </div>
+      <div class="gx-trans-content" id="gxTransContent">Çevriliyor...</div>
+      <div class="gx-trans-footer">
+        <button type="button" class="gx-trans-action-btn" id="gxCopyTransBtn">📋 Kopyala</button>
+        <button type="button" class="gx-trans-action-btn" id="gxOpenTransTabBtn">Google Çeviri ↗</button>
+      </div>
+    </div>
   `;
 
-  bar.querySelectorAll('.pdf-tool-btn[data-color]').forEach(btn => {
+  // 1. Web'de Ara Butonu
+  popup.querySelector('#gxSearchBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (currentSelectedText) {
+      chrome.runtime.sendMessage({
+        type: 'OPEN_SEARCH_TAB',
+        query: currentSelectedText
+      }).catch(() => {});
+      hideSelectionPopup();
+    }
+  });
+
+  // 2. Kopyala Butonu
+  popup.querySelector('#gxCopyBtn').addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (currentSelectedText) {
+      try {
+        await navigator.clipboard.writeText(currentSelectedText);
+      } catch (err) {
+        const temp = document.createElement('textarea');
+        temp.value = currentSelectedText;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        temp.remove();
+      }
+      const label = popup.querySelector('#gxCopyBtn .gx-btn-label');
+      if (label) {
+        label.textContent = '✓ Kopyalandı';
+        popup.querySelector('#gxCopyBtn').style.color = '#4ade80';
+        setTimeout(() => {
+          label.textContent = 'Kopyala';
+          popup.querySelector('#gxCopyBtn').style.color = '';
+          hideSelectionPopup();
+        }, 600);
+      }
+    }
+  });
+
+  // 3. Çeviri Butonu & Kartı
+  const transCard = popup.querySelector('#gxTransCard');
+  const transContent = popup.querySelector('#gxTransContent');
+  const closeTransBtn = popup.querySelector('#gxCloseTransBtn');
+  const copyTransBtn = popup.querySelector('#gxCopyTransBtn');
+  const openTransTabBtn = popup.querySelector('#gxOpenTransTabBtn');
+
+  popup.querySelector('#gxTranslateBtn').addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (!currentSelectedText) return;
+
+    transCard.style.display = 'flex';
+    transContent.textContent = 'Çevriliyor...';
+
+    const result = await fetchTranslation(currentSelectedText);
+    if (result) {
+      transContent.textContent = result;
+    } else {
+      transContent.textContent = 'Çeviri alınamadı. Google Çeviri sekmesinde açabilirsiniz.';
+    }
+  });
+
+  closeTransBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    transCard.style.display = 'none';
+  });
+
+  copyTransBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const textToCopy = transContent.textContent;
+    if (textToCopy && textToCopy !== 'Çevriliyor...') {
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        copyTransBtn.textContent = '✓ Kopyalandı';
+        setTimeout(() => { copyTransBtn.textContent = '📋 Kopyala'; }, 1000);
+      } catch (err) {}
+    }
+  });
+
+  openTransTabBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (currentSelectedText) {
+      chrome.runtime.sendMessage({
+        type: 'OPEN_TRANSLATE_TAB',
+        text: currentSelectedText
+      }).catch(() => {});
+      hideSelectionPopup();
+    }
+  });
+
+  // 4. Renkli Vurgulama Butonları
+  popup.querySelectorAll('.gx-color-btn[data-color]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       applyHighlight(btn.dataset.color);
-      bar.classList.remove('active');
+      hideSelectionPopup();
     });
   });
 
-  bar.querySelector('#pdfAddNoteBtn').addEventListener('click', (e) => {
+  // 5. Not Ekle Butonu
+  popup.querySelector('#gxStickyNoteBtn').addEventListener('click', (e) => {
     e.stopPropagation();
     createStickyNote(savedRange ? savedRange.getBoundingClientRect() : { top: 100, left: 100 });
-    bar.classList.remove('active');
+    hideSelectionPopup();
   });
 
-  bar.querySelector('#pdfExportBtn').addEventListener('click', (e) => {
+  // 6. Notları Dışa Aktar Butonu
+  popup.querySelector('#gxExportNotesBtn').addEventListener('click', (e) => {
     e.stopPropagation();
     exportAnnotations();
-    bar.classList.remove('active');
+    hideSelectionPopup();
   });
 
-  document.body.appendChild(bar);
-  annotatorToolbar = bar;
-  return bar;
+  document.body.appendChild(popup);
+  selectionPopup = popup;
+  return popup;
+}
+
+function hideSelectionPopup() {
+  if (selectionPopup) {
+    selectionPopup.classList.remove('active');
+    const transCard = selectionPopup.querySelector('#gxTransCard');
+    if (transCard) transCard.style.display = 'none';
+  }
 }
 
 function applyHighlight(color) {
   const sel = window.getSelection();
-  if (!sel.rangeCount || sel.isCollapsed) return;
+  if (!sel || !sel.rangeCount || sel.isCollapsed) return;
 
   const range = sel.getRangeAt(0);
   const text = range.toString().trim();
@@ -177,7 +406,7 @@ function createStickyNote(rect, initialText = '') {
   note.innerHTML = `
     <div class="pdf-note-header">
       <span>📝 Not</span>
-      <button class="pdf-note-close">✕</button>
+      <button type="button" class="pdf-note-close">✕</button>
     </div>
     <textarea class="pdf-note-textarea" placeholder="Notunuzu buraya yazın...">${initialText}</textarea>
   `;
@@ -216,7 +445,9 @@ async function exportAnnotations() {
   let md = `# Belge Notları & Vurguları\n**Sayfa:** ${window.location.href}\n**Tarih:** ${new Date().toLocaleString('tr-TR')}\n\n---\n\n`;
   list.forEach((item, i) => {
     if (item.type === 'highlight') {
-      md += `### ${i + 1}. Vurgulanan Metin (${item.color})\n> "${item.text}"\n*Eklenme: ${item.timestamp}*\n\n`;
+      md += `### ${i + 1}. Vurgulanan Metin (${item.color})\n> "${item.text}"\n*Eklenme: ${item.timestamp}*
+
+`;
     } else {
       md += `### ${i + 1}. Not\n${item.text}\n*Eklenme: ${item.timestamp}*\n\n`;
     }
@@ -231,23 +462,69 @@ async function exportAnnotations() {
   URL.revokeObjectURL(url);
 }
 
-document.addEventListener('mouseup', async () => {
+// 🖱️ Mouse Up ile Seçim Yakalama ve Menü Konumlandırma
+document.addEventListener('mouseup', async (e) => {
+  if (selectionPopup && selectionPopup.contains(e.target)) return;
+
   const { pdfNotesEnabled = true } = await chrome.storage.local.get('pdfNotesEnabled');
   if (!pdfNotesEnabled) return;
 
-  const sel = window.getSelection();
-  if (sel && !sel.isCollapsed && sel.toString().trim().length > 0) {
-    savedRange = sel.getRangeAt(0);
-    const rect = savedRange.getBoundingClientRect();
-    const toolbar = getOrCreateAnnotatorToolbar();
-    
-    toolbar.style.top = `${Math.max(10, window.scrollY + rect.top - 42)}px`;
-    toolbar.style.left = `${Math.min(window.innerWidth - 180, window.scrollX + rect.left + (rect.width / 2) - 80)}px`;
-    toolbar.classList.add('active');
-  } else {
-    if (annotatorToolbar) annotatorToolbar.classList.remove('active');
+  setTimeout(() => {
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && sel.toString().trim().length > 0) {
+      currentSelectedText = sel.toString().trim();
+      savedRange = sel.getRangeAt(0);
+      const rect = savedRange.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) return;
+
+      const popup = getOrCreateSelectionPopup();
+      
+      // Akıllı Dönüştürücü Kontrolü
+      const insight = getSmartInsight(currentSelectedText);
+      const smartBar = popup.querySelector('#gxSmartBar');
+      const smartIcon = popup.querySelector('#gxSmartIcon');
+      const smartText = popup.querySelector('#gxSmartText');
+
+      if (insight) {
+        smartIcon.textContent = insight.icon;
+        smartText.textContent = insight.text;
+        smartBar.style.display = 'flex';
+      } else {
+        smartBar.style.display = 'none';
+      }
+
+      popup.style.display = 'flex';
+      const popupRect = popup.getBoundingClientRect();
+      
+      let top = window.scrollY + rect.top - popupRect.height - 10;
+      let left = window.scrollX + rect.left + (rect.width / 2) - (popupRect.width / 2);
+
+      // Üste sığmıyorsa seçimin altına al
+      if (rect.top - popupRect.height - 10 < 8) {
+        top = window.scrollY + rect.bottom + 10;
+      }
+
+      // Sağ ve sol taşma engeli
+      if (left < 10) left = 10;
+      else if (left + popupRect.width > window.scrollX + window.innerWidth - 10) {
+        left = window.scrollX + window.innerWidth - popupRect.width - 10;
+      }
+
+      popup.style.top = `${Math.round(top)}px`;
+      popup.style.left = `${Math.round(left)}px`;
+      popup.classList.add('active');
+    } else {
+      hideSelectionPopup();
+    }
+  }, 10);
+});
+
+// Dışarı tıklandığında menüyü gizle
+document.addEventListener('mousedown', (e) => {
+  if (selectionPopup && !selectionPopup.contains(e.target)) {
+    hideSelectionPopup();
   }
-}, { passive: true });
+});
 
 
 // --- 3. EVRENSEL LINK TESPITI VE SADE SEKME ROZETI ---

@@ -593,6 +593,40 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
         sendResponse({ success: true, discardedCount });
       }
+      else if (message.type === 'OPEN_SEARCH_TAB') {
+        if (message.query) {
+          const { defaultSearchEngine = 'google' } = await chrome.storage.local.get('defaultSearchEngine');
+          let searchUrl = `https://www.google.com/search?q=${encodeURIComponent(message.query)}`;
+          if (defaultSearchEngine === 'duckduckgo') {
+            searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(message.query)}`;
+          } else if (defaultSearchEngine === 'brave') {
+            searchUrl = `https://search.brave.com/search?q=${encodeURIComponent(message.query)}`;
+          } else if (defaultSearchEngine === 'bing') {
+            searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(message.query)}`;
+          } else if (defaultSearchEngine === 'yandex') {
+            searchUrl = `https://yandex.com/search/?text=${encodeURIComponent(message.query)}`;
+          }
+          const currentTab = sender.tab;
+          await chrome.tabs.create({
+            url: searchUrl,
+            index: currentTab ? currentTab.index + 1 : undefined,
+            active: true
+          });
+          sendResponse({ success: true });
+        }
+      }
+      else if (message.type === 'OPEN_TRANSLATE_TAB') {
+        if (message.text) {
+          const translateUrl = `https://translate.google.com/?sl=auto&tl=tr&text=${encodeURIComponent(message.text)}&op=translate`;
+          const currentTab = sender.tab;
+          await chrome.tabs.create({
+            url: translateUrl,
+            index: currentTab ? currentTab.index + 1 : undefined,
+            active: true
+          });
+          sendResponse({ success: true });
+        }
+      }
     } catch (err) {
       sendResponse({ error: err.message });
     }
