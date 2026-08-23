@@ -1,78 +1,82 @@
 # 🦁 Better Brave Suite
 
-> **Süper Güçlerle Donatılmış Sekme Yönetimi, Opera GX Tarzı Ses Efektleri, Canlı RAM/CPU Takibi ve Minimalist Yeni Sekme Sayfası.**
+> **Power-up your browser with Opera GX style sound effects, smart tab management & snoozing, live RAM/CPU monitor, and a minimalist freeform new tab dashboard.**
 
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-38bdf8?style=flat-square&logo=googlechrome)](https://developer.chrome.com/docs/extensions/mv3/intro/)
-[![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-emerald?style=flat-square)](https://github.com/)
+[![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-emerald?style=flat-square)](https://github.com/dev-aaw/better-brave)
 [![License: MIT](https://img.shields.io/badge/License-MIT-amber?style=flat-square)](LICENSE)
 [![Zero Data Collection](https://img.shields.io/badge/Privacy-100%25%20Local-blueviolet?style=flat-square)](PRIVACY.md)
 
 ---
 
-## 🇹🇷 Türkçe Özellikler
+## 🌟 Overview
 
-**Better Brave**, Brave ve Chromium tabanlı tarayıcılar için geliştirilmiş açık kaynaklı, gizlilik odaklı ve yüksek performanslı bir tarayıcı geliştirme eklentisidir.
-
-### ✨ Öne Çıkan Özellikler:
-
-1. 🎵 **Opera GX Tarzı Ses Efektleri (Web Audio API):**
-   - Yeni sekme açıldığında ve sekme kapatıldığında dinamik ses geri bildirimi.
-   - Pop, GX Click, Chime ve Woosh ses profilleri veya özel ses (MP3/WAV) yükleme.
-
-2. 🚀 **Akıllı Sekme & Bellek Yönetimi:**
-   - **Akıllı RAM Tasarrufu (Tab Snoozer):** Arka planda unutulan sekmeleri uyutarak %60'a varan RAM tasarrufu sağlar.
-   - **Çift Açık Sekmeleri Tek Tıkla Kapatma:** Aynı siteden birden fazla açılmış gereksiz kopyaları temizler.
-   - **Tek Tıkla RAM Boşaltma:** Arka plan sekmelerini tek tıkla dondurur.
-   - **Sekme Gruplama & Renk Kodlama:** Aynı domain sekmelerini otomatik gruplar.
-   - **Hızlı Sekme Arama (`Ctrl + Shift + F`):** Yüzlerce sekme arasında anında arama yapıp geçiş yapın.
-
-3. ⚡ **Canlı RAM & CPU Araç Çubuğu Rozeti (Toolbar Badge):**
-   - Eklenti simgesi üzerinde gerçek zamanlı RAM kullanım yüzdesi ve dinamik durum renkleri (Yeşil / Sarı / Kırmızı).
-   - Yeni sekme sayfasında canlı CPU yükü ve çekirdek göstergesi.
-
-4. 🔗 **Evrensel Açık Link Tespiti (Link Glow):**
-   - Fareyi bir linkin veya YouTube videosunun üzerine getirdiğinizde, o link zaten başka bir sekmede açıksa anında rozet gösterir. Tıklayarak doğrudan o sekmeye geçebilirsiniz.
-
-5. 🎶 **Sekme Başlığında Müzik Notası Animasyonu:**
-   - Ses çalan sekmelerin başlığında ritmik nota animasyonu (`🎵 🎶 🎧`).
-
-6. 📑 **PDF & Web Sayfası Vurgulama ve Not Alma:**
-   - Metin seçildiğinde sarı, mavi, yeşil fosforlu kalem ve yapışkan not araç çubuğu.
-   - Tüm notları tek tıkla Markdown (`.md`) olarak dışa aktarma.
-
-7. 🖼️ **Özgür Tuval Minimalist Yeni Sekme Sayfası:**
-   - Manyetik akıllı hizalama (Smart Magnetic Snapping) ile widget'ları dilediğiniz yere sürükleyip bırakın.
-   - Kutusuz, çerçevesiz saf minimalist tasarım.
-   - Dijital / Analog saat, dünya saatleri ve canlı hava durumu.
-   - Speed Dial kısayolları ve hafif Yapılacaklar (To-Do) listesi.
-   - Özel arka plan resmi (HD/4K duvar kağıdı) desteği.
+**Better Brave** is a lightweight, privacy-focused, open-source productivity suite and browser enhancement for Brave and Chromium-based browsers. Built with Manifest V3 and pure Web APIs, it delivers a high-performance experience with near-zero CPU and memory footprint.
 
 ---
 
-## 🛠️ Kurulum (Geliştirici Modu / Manuel Yükleme)
+## ✨ Key Features
 
-1. Bu depoyu indirin veya klonlayın:
+### 🎵 1. Opera GX Style Sound Enhancer (Web Audio API)
+* Crisp, low-latency audio feedback when opening and closing tabs.
+* Built-in sound synthesis profiles: **Pop**, **GX Click**, **Chime**, **Woosh**.
+* Custom audio support: Upload your own MP3 / WAV audio files.
+
+### 🚀 2. Intelligent Tab & Memory Management
+* **💤 Smart Tab Snoozer:** Automatically sleeps inactive background tabs, freeing up to **60% RAM**.
+* **🧹 Close Duplicate Tabs:** One-click detection and cleanup of duplicate URLs across all windows.
+* **⚡ One-Click RAM Flush:** Instantly freeze unused background tabs to recover system memory.
+* **🏷️ Smart Tab Grouping:** Automatically group and color-code tabs from the same domain or custom categories.
+* **🔍 Fast Tab Search (`Ctrl + Shift + F`):** Instantly search and jump between hundreds of open tabs with fuzzy filtering.
+
+### ⚡ 3. Real-Time RAM & CPU Toolbar Badge
+* Live memory usage percentage directly on the extension toolbar icon with dynamic status coloring (Green 🟢 / Yellow 🟡 / Red 🔴).
+* Multi-core CPU load and memory usage breakdown.
+
+### 🔗 4. Universal Open Link Detector (Link Glow)
+* Hovering any link or YouTube video thumbnail shows a badge if that link is already open in another tab.
+* Click the badge to jump straight to that tab and avoid creating clutter.
+
+### 🎶 5. Audio Playing Indicator
+* Animated musical note (`🎵 🎶 🎧`) in the title of tabs actively playing audio or video.
+
+### 📑 6. PDF & Web Page Highlighter + Sticky Notes
+* Select text on any web page or PDF to highlight in Yellow, Blue, or Green.
+* Attach sticky notes and export all annotations as Markdown (`.md`) with one click.
+
+### 🖼️ 7. Minimalist Freeform New Tab Dashboard
+* **Smart Magnetic Snapping:** Drag and drop widgets anywhere on the screen with smart alignment guidelines.
+* **Frameless Minimalist Look:** Zero-clutter aesthetic that blends seamlessly with any background.
+* Digital & Analog clock with world clocks and live weather forecasts.
+* Speed Dial shortcuts with auto-detected high-res favicons.
+* Lightweight To-Do checklist and custom HD/4K wallpaper support.
+
+---
+
+## 🛠️ Installation (Developer Mode / Manual)
+
+1. Clone this repository:
    ```bash
-   git clone https://github.com/kullaniciadi/better-brave.git
+   git clone https://github.com/dev-aaw/better-brave.git
    ```
-2. Tarayıcınızda eklentiler sayfasına gidin:
-   - Brave için: `brave://extensions`
-   - Chrome için: `chrome://extensions`
-3. Sağ üst köşedeki **Geliştirici Modu (Developer Mode)** seçeneğini açın.
-4. **Paketlenmemiş öğe yükle (Load unpacked)** butonuna tıklayın ve proje klasörünü seçin.
-5. Yeni bir sekme açarak (`Ctrl + T`) Better Brave'in keyfini çıkarın!
+2. Navigate to your browser's extensions page:
+   * **Brave:** `brave://extensions`
+   * **Chrome:** `chrome://extensions`
+3. Enable **Developer mode** in the top right corner.
+4. Click **Load unpacked** and select the `better-brave` folder.
+5. Open a new tab (`Ctrl + T`) to explore your upgraded dashboard!
 
 ---
 
-## 🔒 Gizlilik Politikası
+## 🔒 Privacy & Security
 
-Better Brave **hiçbir kullanıcı verisini toplamaz, kaydetmez veya üçüncü taraflarla paylaşmaz**.
-- Tüm ayarlar, kısayollar ve notlar tarayıcınızın yerel depolama alanında (`chrome.storage.local`) saklanır.
-- Sıfır telemetri, sıfır harici komut dosyası (CDN / Google Analytics bulunmaz).
-- Detaylar için [PRIVACY.md](PRIVACY.md) dosyasını inceleyebilirsiniz.
+Better Brave is **100% private and offline-first**:
+* **Zero Telemetry:** No tracking, no user analytics, no data harvesting.
+* **100% Local Storage:** All your shortcuts, notes, and preferences are stored exclusively on your device via `chrome.storage.local`.
+* For details, see [PRIVACY.md](PRIVACY.md).
 
 ---
 
-## 📄 Lisans
+## 📄 License
 
-Bu proje **MIT Lisansı** ile lisanslanmıştır.
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for more information.
