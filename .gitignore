@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Backups & Temp files
+backup/
+backup_v1/
+backup2/
+*.zip
+*.crx
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+
+# Editor configs
+.vscode/
+.idea/

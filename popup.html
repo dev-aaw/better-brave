@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Better Brave Suite</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: #18181b;
+      --card-border: #27272a;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --switch-on: #38bdf8;
+      --switch-off: #3f3f46;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --warning: #eab308;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      width: 380px;
+      max-height: 620px;
+      overflow-y: auto;
+      background: var(--bg);
+      color: var(--text);
+      padding: 14px;
+      user-select: none;
+    }
+    body::-webkit-scrollbar {
+      width: 5px;
+    }
+    body::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 4px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .logo-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mute-all-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      background: #27272a;
+      color: #f4f4f5;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .mute-all-btn:hover {
+      background: #3f3f46;
+    }
+    .mute-all-btn.active-muted {
+      background: #ef4444;
+      border-color: #dc2626;
+      color: #ffffff;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    /* System Stats Bar */
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 11.5px;
+    }
+    .stat-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: #27272a;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .stat-bar-fill {
+      height: 100%;
+      background: var(--success);
+      width: 40%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    /* Search Input */
+    .search-box {
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .search-input {
+      width: 100%;
+      background: #27272a;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 6px 10px 6px 26px;
+      border-radius: 6px;
+      font-size: 12px;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+    .search-icon {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .search-results {
+      max-height: 140px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .search-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 5px 8px;
+      background: #202026;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .search-item:hover {
+      background: #2b2b36;
+    }
+    .tab-info-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      flex: 1;
+    }
+    .tab-favicon {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .tab-title-text {
+      font-size: 11px;
+      color: #e4e4e7;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tab-domain-text {
+      font-size: 9.5px;
+      color: var(--text-muted);
+    }
+    .no-results-msg {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 6px 0;
+    }
+
+    /* Audio Tabs List */
+    .audio-tab-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .audio-tab-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #202026;
+      padding: 5px 8px;
+      border-radius: 6px;
+      gap: 8px;
+    }
+    .audio-btn {
+      background: #27272a;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .audio-btn:hover {
+      background: #3f3f46;
+    }
+
+    /* Tab Grouping */
+    .group-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+    .preset-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 7px;
+      background: #27272a;
+      border: 1px solid var(--card-border);
+      border-radius: 5px;
+      color: #e4e4e7;
+      font-size: 10.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .preset-btn:hover {
+      background: #3f3f46;
+    }
+    .color-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+    .custom-group-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .group-input {
+      flex: 1;
+      background: #27272a;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      outline: none;
+    }
+    .color-select {
+      background: #27272a;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 3px 6px;
+      border-radius: 5px;
+      font-size: 11px;
+      outline: none;
+      width: 80px;
+    }
+    .add-group-btn {
+      background: var(--accent);
+      color: #09090b;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .active-groups-list {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .active-group-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #202026;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 11px;
+    }
+    .ungroup-btn {
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      font-size: 10.5px;
+      cursor: pointer;
+    }
+
+    /* Tracker Stats Box */
+    .tracker-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #202026;
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+    .tracker-count {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    /* Switches */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 18px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--switch-off);
+      transition: .2s;
+      border-radius: 18px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 12px;
+      width: 12px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--switch-on);
+    }
+    input:checked + .slider:before {
+      transform: translateX(16px);
+      background-color: #09090b;
+    }
+
+    select.sound-select {
+      background: #27272a;
+      color: #fff;
+      border: 1px solid var(--card-border);
+      border-radius: 5px;
+      padding: 3px 6px;
+      font-size: 11.5px;
+      outline: none;
+      width: 135px;
+    }
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 4px;
+    }
+    input[type=range] {
+      flex: 1;
+      accent-color: var(--accent);
+      cursor: pointer;
+      height: 4px;
+    }
+    .vol-text {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      width: 28px;
+      text-align: right;
+    }
+    .custom-file-box {
+      margin-top: 6px;
+      padding: 6px 8px;
+      background: #202026;
+      border: 1px dashed var(--card-border);
+      border-radius: 5px;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .custom-file-box.active {
+      display: flex;
+    }
+    .upload-btn {
+      background: #27272a;
+      border: 1px solid #3f3f46;
+      color: #e4e4e7;
+      font-size: 11px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .file-name-label {
+      font-size: 10px;
+      color: var(--accent);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 280px;
+    }
+    .test-btn {
+      width: 100%;
+      background: #27272a;
+      border: 1px solid #3f3f46;
+      color: #f4f4f5;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.15s;
+    }
+    .test-btn:hover {
+      background: #3f3f46;
+    }
+    .hint-text {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo-title">
+      Better Brave Suite
+    </div>
+    <div class="top-actions">
+      <button class="mute-all-btn" id="muteAllBtn">
+        <span id="muteAllIcon">🔊</span>
+        <span id="muteAllText">Tümünü Sustur</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 1. RAM / CPU Monitörü -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">⚡ RAM & CPU Monitörü</span>
+      <label class="switch">
+        <input type="checkbox" id="ramCpuMonitorEnabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="stat-row">
+      <span>RAM Kullanımı</span>
+      <span id="ramStatText" style="font-weight:700;">-- / --</span>
+    </div>
+    <div class="stat-bar-bg">
+      <div class="stat-bar-fill" id="ramBarFill"></div>
+    </div>
+    <div class="stat-row">
+      <span>CPU Yükü (<span id="cpuCoresText">4</span> Çekirdek)</span>
+      <span id="cpuStatText" style="font-weight:700;">0%</span>
+    </div>
+    <div class="stat-bar-bg">
+      <div class="stat-bar-fill" id="cpuBarFill" style="background:#38bdf8; width:10%;"></div>
+    </div>
+  </div>
+
+  <!-- 2. Sekme Arama -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🔍 Sekme Arama</span>
+      <span style="font-size: 10px; color: var(--text-muted);">Ctrl+Shift+F</span>
+    </div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="tabSearchInput" class="search-input" placeholder="Açık sekmelerde başlık veya URL ara...">
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
+  <!-- 3. Hangi Sekmede Ses Çalıyor -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🔊 Ses Çalan Sekmeler</span>
+      <span id="audioTabCount" style="font-size: 10.5px; color: var(--accent);">0 Sekme</span>
+    </div>
+    <div class="audio-tab-list" id="audioTabList">
+      <div class="no-results-msg">Şu an ses çalan sekme yok</div>
+    </div>
+  </div>
+
+  <!-- 4. Sekme Gruplama & Renk Kodlama -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🏷️ Sekme Grupları</span>
+      <span style="font-size: 10px; color: var(--text-muted);">Aktif Sekmeyi Ekle</span>
+    </div>
+    <div class="group-presets">
+      <button class="preset-btn" data-name="İş" data-color="blue"><span class="color-dot" style="background:#3b82f6;"></span>İş</button>
+      <button class="preset-btn" data-name="Eğlence" data-color="red"><span class="color-dot" style="background:#ef4444;"></span>Eğlence</button>
+      <button class="preset-btn" data-name="Alışveriş" data-color="green"><span class="color-dot" style="background:#22c55e;"></span>Alışveriş</button>
+      <button class="preset-btn" data-name="Sosyal" data-color="purple"><span class="color-dot" style="background:#a855f7;"></span>Sosyal</button>
+      <button class="preset-btn" data-name="Araştırma" data-color="yellow"><span class="color-dot" style="background:#eab308;"></span>Araştırma</button>
+    </div>
+    <div class="custom-group-row">
+      <input type="text" id="customGroupName" class="group-input" placeholder="Grup Adı...">
+      <select id="customGroupColor" class="color-select">
+        <option value="blue">Mavi</option>
+        <option value="red">Kırmızı</option>
+        <option value="green">Yeşil</option>
+        <option value="yellow">Sarı</option>
+        <option value="purple">Mor</option>
+        <option value="pink">Pembe</option>
+        <option value="cyan">Camgöbeği</option>
+        <option value="orange">Turuncu</option>
+        <option value="grey">Gri</option>
+      </select>
+      <button id="addCustomGroupBtn" class="add-group-btn">Ekle</button>
+    </div>
+    <div class="active-groups-list" id="activeGroupsList"></div>
+  </div>
+
+  <!-- 5. Tracker & Gizlilik Özeti -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🛡️ Tracker & Gizlilik Özeti</span>
+      <span style="font-size: 10px; color: var(--success); font-weight:700;">Korumalı</span>
+    </div>
+    <div class="tracker-box">
+      <div>
+        <div style="font-size:11px; color:var(--text-muted);">Bugün Engellenen Tracker</div>
+        <div class="tracker-count" id="todayTrackerCount">184</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size:11px; color:var(--text-muted);">Mevcut Sitede</div>
+        <div style="font-size:14px; font-weight:700; color:#fff;" id="currentSiteTrackers">6</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Müzik Notası Animasyonu -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🎵 Müzik Çalma Göstergesi</span>
+      <label class="switch">
+        <input type="checkbox" id="musicIndicatorEnabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="hint-text">Müzik/ses çalan sekmelerin başlığında animasyonlu müzik notası (🎵, 🎶) gösterir.</p>
+  </div>
+
+  <!-- 7. PDF Not Alma & Highlight -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📝 PDF & Sayfa Not Alma</span>
+      <label class="switch">
+        <input type="checkbox" id="pdfNotesEnabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="hint-text">PDF veya sayfalarda metin seçtiğinizde sarı/mavi/yeşil highlight araç çubuğu gösterir, notları kaydeder ve dışa aktarır.</p>
+  </div>
+
+  <!-- 8. Otomatik PiP -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📺 Otomatik PiP (Yüzen Video)</span>
+      <label class="switch">
+        <input type="checkbox" id="autoPipEnabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="hint-text">Video oynarken başka sekmeye geçince videoyu otomatik küçük yüzen pencereye alır, geri dönünce kapatır.</p>
+  </div>
+
+  <!-- 9. Açık Sekme Göstergesi -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">⚡ Açık Link Tespiti</span>
+      <label class="switch">
+        <input type="checkbox" id="linkGlowEnabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="hint-text">Başka sekmede açık olan linklerin üzerine gelince sade sekme rozeti gösterir ve sekme başlığını ⚡ ile titreştirir.</p>
+  </div>
+
+  <!-- 10. Sekme Açılış Sesi -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🔔 Sekme Açılış Sesi</span>
+      <label class="switch">
+        <input type="checkbox" id="openSoundEnabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="row">
+      <label style="font-size: 11.5px;">Ses Profili</label>
+      <select id="openSoundType" class="sound-select">
+        <option value="pop">Pop (Yumuşak)</option>
+        <option value="gx_click">Cyber Click</option>
+        <option value="gx_chime">Modern Chime</option>
+        <option value="gx_woosh">Sci-Fi Woosh</option>
+        <option value="custom">📁 Özel Ses Yükle...</option>
+      </select>
+    </div>
+    <div id="openCustomBox" class="custom-file-box">
+      <input type="file" id="openFileInput" accept=".mp3,.wav,.ogg" style="display: none;">
+      <button class="upload-btn" id="openUploadBtn">🎵 Ses Dosyası Seç (mp3/wav)</button>
+      <span id="openFileName" class="file-name-label"></span>
+    </div>
+    <div style="margin-top: 4px;">
+      <div class="slider-wrap">
+        <label style="font-size: 10.5px; color: var(--text-muted);">Seviye</label>
+        <input type="range" id="openSoundVolume" min="0.05" max="1" step="0.05" value="0.6">
+        <span id="openVolVal" class="vol-text">60%</span>
+      </div>
+    </div>
+    <button class="test-btn" id="testOpenSoundBtn">Açılış Sesini Test Et 🔊</button>
+  </div>
+
+  <!-- 11. Sekme Kapanış Sesi -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🔕 Sekme Kapanış Sesi</span>
+      <label class="switch">
+        <input type="checkbox" id="closeSoundEnabled">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="row">
+      <label style="font-size: 11.5px;">Ses Profili</label>
+      <select id="closeSoundType" class="sound-select">
+        <option value="gx_click">Cyber Click</option>
+        <option value="pop">Pop (Yumuşak)</option>
+        <option value="gx_chime">Modern Chime</option>
+        <option value="gx_woosh">Sci-Fi Woosh</option>
+        <option value="custom">📁 Özel Ses Yükle...</option>
+      </select>
+    </div>
+    <div id="closeCustomBox" class="custom-file-box">
+      <input type="file" id="closeFileInput" accept=".mp3,.wav,.ogg" style="display: none;">
+      <button class="upload-btn" id="closeUploadBtn">🎵 Ses Dosyası Seç (mp3/wav)</button>
+      <span id="closeFileName" class="file-name-label"></span>
+    </div>
+    <div style="margin-top: 4px;">
+      <div class="slider-wrap">
+        <label style="font-size: 10.5px; color: var(--text-muted);">Seviye</label>
+        <input type="range" id="closeSoundVolume" min="0.05" max="1" step="0.05" value="0.6">
+        <span id="closeVolVal" class="vol-text">60%</span>
+      </div>
+    </div>
+    <button class="test-btn" id="testCloseSoundBtn">Kapanış Sesini Test Et 🔊</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

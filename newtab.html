@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="newTab">Yeni Sekme</title>
+  <link rel="stylesheet" href="newtab.css">
+</head>
+<body class="mode-locked">
+
+  <!-- Canlı / Dinamik Arka Plan Katmanı -->
+  <div id="bgLayer" class="bg-layer"></div>
+  <div class="bg-tint"></div>
+
+  <!-- Üst Navigasyon -->
+  <header class="top-nav">
+    <div class="nav-right">
+      <button class="icon-toggle-btn btn-add-widget-top" id="openAddWidgetModalBtn" title="Ekrana Yeni Widget Ekle" style="display: none;">
+        <span>➕</span> <span data-i18n="addWidget">Widget Ekle</span>
+      </button>
+      <button class="icon-toggle-btn" id="lockToggleBtn" title="Düzenleme Modunu Aç/Kapat">
+        <span class="lock-icon" id="lockIcon">✏️</span>
+        <span class="lock-label" id="lockLabel" data-i18n="editBtn">Düzenle</span>
+      </button>
+      <button class="icon-nav-btn" id="openSettingsBtn" title="Better Brave Kontrol Merkezi & Ayarlar">
+        ⚙️
+      </button>
+    </div>
+  </header>
+
+  <!-- Tam Ekran Serbest Widget Tuvali (Freeform Drag & Snap Canvas) -->
+  <main class="dashboard-canvas" id="dashboardCanvas">
+    <!-- Manyetik Hizalama Kılavuz Çizgileri -->
+    <div id="snapGuideX" class="snap-guide snap-guide-x" style="display: none;"></div>
+    <div id="snapGuideY" class="snap-guide snap-guide-y" style="display: none;"></div>
+
+    <!-- WIDGET 1: Ana Saat (Dijital veya Analog) -->
+    <div class="widget-card" id="widget-clock" data-widget="clock">
+      <div class="widget-drag-handle" title="Taşımak için sürükle">⠿</div>
+      <button class="widget-remove-btn" title="Widget'ı Kaldır" data-remove="clock">✕</button>
+      
+      <div id="digitalClockView" class="clock-digital-wrap">
+        <div class="time-display" id="digitalTime">12:00</div>
+        <div class="date-display" id="digitalDate">--</div>
+      </div>
+
+      <div id="analogClockView" class="clock-analog-wrap" style="display: none;">
+        <div class="analog-clock">
+          <div class="clock-face">
+            <div class="hand hour-hand" id="analogHour"></div>
+            <div class="hand min-hand" id="analogMin"></div>
+            <div class="hand sec-hand" id="analogSec"></div>
+            <div class="center-dot"></div>
+          </div>
+        </div>
+        <div class="date-display" id="analogDate" style="margin-top: 10px;">--</div>
+      </div>
+    </div>
+
+    <!-- WIDGET 2: Arama Çubuğu -->
+    <div class="widget-card" id="widget-search" data-widget="search">
+      <div class="widget-drag-handle" title="Taşımak için sürükle">⠿</div>
+      <button class="widget-remove-btn" title="Widget'ı Kaldır" data-remove="search">✕</button>
+      <form class="search-bar-form" id="searchForm">
+        <select id="searchEngineSelect" class="engine-picker" title="Arama Motoru">
+          <option value="google">Google</option>
+          <option value="brave">Brave</option>
+          <option value="duckduckgo">DuckDuckGo</option>
+          <option value="bing">Bing</option>
+          <option value="yandex">Yandex</option>
+        </select>
+        <input type="text" id="searchInput" class="search-field" placeholder="Web'de veya URL ara..." autocomplete="off">
+        <button type="submit" class="search-submit" title="Ara" data-i18n-title="searchBtn">🔍</button>
+      </form>
+    </div>
+
+    <!-- WIDGET 3: Sabitlenmiş Sekmeler (Speed Dial) -->
+    <div class="widget-card" id="widget-shortcuts" data-widget="shortcuts">
+      <div class="widget-drag-handle" title="Taşımak için sürükle">⠿</div>
+      <button class="widget-remove-btn" title="Widget'ı Kaldır" data-remove="shortcuts">✕</button>
+      <div class="shortcuts-container" id="shortcutsContainer">
+        <!-- Kısayollar JS ile doldurulur -->
+      </div>
+    </div>
+
+    <!-- WIDGET 4: Dünya Saatleri & Çoklu Şehir Hava Durumu -->
+    <div class="widget-card" id="widget-weather" data-widget="weather">
+      <div class="widget-drag-handle" title="Taşımak için sürükle">⠿</div>
+      <button class="widget-remove-btn" title="Widget'ı Kaldır" data-remove="weather">✕</button>
+      <div class="multi-city-container" id="multiCityContainer">
+        <!-- Şehirler JS ile dinamik doldurulur -->
+      </div>
+    </div>
+
+    <!-- WIDGET 5: Yapılacaklar & Notlar (Minimalist Checklist) -->
+    <div class="widget-card" id="widget-todo" data-widget="todo">
+      <div class="widget-drag-handle" title="Taşımak için sürükle">⠿</div>
+      <button class="widget-remove-btn" title="Widget'ı Kaldır" data-remove="todo">✕</button>
+      <div class="todo-widget-container">
+        <div class="todo-header">
+          <span class="todo-title">📝 <span data-i18n="widgetTodo">Yapılacaklar</span></span>
+          <span class="todo-count" id="todoCompletedCount">0/0</span>
+        </div>
+        <form class="todo-input-form" id="todoInputForm">
+          <input type="text" id="todoInput" class="todo-input-field" placeholder="Yeni görev ekle..." autocomplete="off">
+          <button type="submit" class="todo-add-btn" title="Ekle">➕</button>
+        </form>
+        <div class="todo-items-list" id="todoItemsList">
+          <!-- Görevler JS ile listelenir -->
+        </div>
+      </div>
+    </div>
+
+    <!-- WIDGET 6: Canlı Sistem Monitörü (RAM & CPU) -->
+    <div class="widget-card" id="widget-system" data-widget="system">
+      <div class="widget-drag-handle" title="Taşımak için sürükle">⠿</div>
+      <button class="widget-remove-btn" title="Widget'ı Kaldır" data-remove="system">✕</button>
+      <div class="system-widget-container">
+        <div class="system-widget-header">
+          <span>⚡ <span data-i18n="widgetSystem">Sistem Monitörü</span></span>
+          <button type="button" class="btn-widget-clean-ram" id="btnWidgetCleanRam" title="RAM'i Boşalt">
+            <span id="widgetCleanRamIcon">🧹</span> <span id="widgetCleanRamText" data-i18n="cleanRamQuick">Temizle</span>
+          </button>
+        </div>
+        <div class="sys-gauge-row">
+          <div class="sys-gauge-label">
+            <span data-i18n="ramUsage">RAM</span>
+            <span id="widgetRamVal" style="font-weight:700;">-- / --</span>
+          </div>
+          <div class="sys-gauge-bar-bg">
+            <div class="sys-gauge-bar-fill" id="widgetRamFill"></div>
+          </div>
+        </div>
+        <div class="sys-gauge-row">
+          <div class="sys-gauge-label">
+            <span data-i18n="cpuUsage">CPU Yükü</span>
+            <span id="widgetCpuVal" style="font-weight:700;">0%</span>
+          </div>
+          <div class="sys-gauge-bar-bg">
+            <div class="sys-gauge-bar-fill" id="widgetCpuFill" style="background:var(--accent);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- WIDGET EKLEME MODALI (Düzenleme Modundan Açılır) -->
+  <div class="settings-modal" id="addWidgetModal">
+    <div class="modal-overlay" id="addWidgetModalOverlay"></div>
+    <div class="modal-window" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3>➕ <span data-i18n="addWidget">Widget Ekle</span></h3>
+        <button class="modal-close-btn" id="closeAddWidgetModal">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 16px 20px;">
+        <div class="add-widget-list" id="addWidgetList">
+          <!-- Gizli widget'lar JS tarafından listelenir -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KISAYOL EKLEME MODALI -->
+  <div class="settings-modal modal" id="shortcutModal">
+    <div class="modal-overlay" id="shortcutModalOverlay"></div>
+    <div class="modal-window" style="max-width: 420px; padding: 22px;">
+      <div class="modal-header">
+        <h3 data-i18n="addShortcutTitle">Yeni Kısayol Ekle</h3>
+        <button class="modal-close-btn" id="closeShortcutModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;" data-i18n="titleLabel">Başlık</label>
+          <input type="text" id="newShortcutTitle" class="form-input" placeholder="Örn: YouTube">
+        </div>
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label style="display:block; font-size:12px; font-weight:600; color:var(--text-secondary); margin-bottom:6px;" data-i18n="urlLabel">Web Adresi (URL)</label>
+          <input type="text" id="newShortcutUrl" class="form-input" placeholder="https://youtube.com">
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn-primary" id="saveNewShortcutBtn" data-i18n="save">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       BETTER BRAVE KONTROL MERKEZİ & AYARLAR MODALI (KAPSAMLI VE GELİŞMİŞ)
+       ========================================================================= -->
+  <div class="settings-modal" id="settingsModal">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-window">
+      
+      <!-- Modal Üst Başlık & Dil Seçimi -->
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="suite-logo-badge">🦁 Better Brave</div>
+          <h2 class="suite-title" id="suiteTabTitle" data-i18n="controlCenter">Kontrol Merkezi</h2>
+        </div>
+        <div class="modal-header-right">
+          <div class="lang-selector-wrap">
+            <span style="font-size: 13px;">🌐</span>
+            <select id="appLangSelect" class="lang-select-dropdown" title="Dil Seçin / Select Language">
+              <option value="tr">Türkçe (TR)</option>
+              <option value="en">English (EN)</option>
+              <option value="de">Deutsch (DE)</option>
+              <option value="es">Español (ES)</option>
+              <option value="fr">Français (FR)</option>
+            </select>
+          </div>
+          <button class="modal-close-btn" id="closeSettingsModal" title="Kapat">✕</button>
+        </div>
+      </div>
+
+      <!-- Modal Ana İçerik: Sol Yan Menü + Sağ Sekme Panelleri -->
+      <div class="modal-body suite-layout">
+        
+        <!-- Sol Dikey Navigasyon Menüsü -->
+        <nav class="suite-sidebar">
+          <button type="button" class="suite-nav-item active" data-tab="tab-general">
+            <span class="nav-icon">⚡</span>
+            <span class="nav-text" data-i18n="tabGeneral">Genel Özellikler</span>
+          </button>
+          <button type="button" class="suite-nav-item" data-tab="tab-audio">
+            <span class="nav-icon">🔊</span>
+            <span class="nav-text" data-i18n="tabAudio">Ses & Müzik</span>
+          </button>
+          <button type="button" class="suite-nav-item" data-tab="tab-world">
+            <span class="nav-icon">🌍</span>
+            <span class="nav-text" data-i18n="tabWorld">Dünya Saatleri & Hava</span>
+          </button>
+          <button type="button" class="suite-nav-item" data-tab="tab-appearance">
+            <span class="nav-icon">🎨</span>
+            <span class="nav-text" data-i18n="tabAppearance">Görünüm & Tuval</span>
+          </button>
+          <button type="button" class="suite-nav-item" data-tab="tab-shortcuts">
+            <span class="nav-icon">🔗</span>
+            <span class="nav-text" data-i18n="tabShortcuts">Sabitlenmiş Sekmeler</span>
+          </button>
+          <button type="button" class="suite-nav-item" data-tab="tab-privacy">
+            <span class="nav-icon">🛡️</span>
+            <span class="nav-text" data-i18n="tabPrivacy">Sistem & Bellek</span>
+          </button>
+        </nav>
+
+        <!-- Sağ İçerik Alanı (Sekme Panelleri) -->
+        <div class="suite-content">
+
+          <!-- 1. SEKME: GENEL ÖZELLİKLER & TAB SNOOZER -->
+          <div class="suite-tab-pane active" id="tab-general">
+            <div class="feature-item">
+              <div class="feature-info">
+                <span class="feature-name" data-i18n="tabSnoozerTitle">💤 AKILLI RAM TASARRUF MODU (TAB SNOOZER)</span>
+                <span class="feature-desc" data-i18n="tabSnoozerDesc">Arka planda belirli süre kullanılmayan sekmeleri otomatik uyutarak RAM'i %60'a kadar boşaltır.</span>
+              </div>
+              <label class="switch"><input type="checkbox" id="chk_tabSnoozer" checked><span class="switch-slider"></span></label>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-info">
+                <span class="feature-name" data-i18n="musicIndicatorTitle">🎵 MÜZİK ÇALMA GÖSTERGESİ</span>
+                <span class="feature-desc" data-i18n="musicIndicatorDesc">Müzik/ses çalan sekmelerin başlığında animasyonlu müzik notası (🎵, 🎶) gösterir.</span>
+              </div>
+              <label class="switch"><input type="checkbox" id="chk_musicIndicator" checked><span class="switch-slider"></span></label>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-info">
+                <span class="feature-name" data-i18n="pdfNotesTitle">📑 PDF & SAYFA NOT ALMA</span>
+                <span class="feature-desc" data-i18n="pdfNotesDesc">PDF veya sayfalarda metin seçtiğinizde sarı/mavi/yeşil highlight araç çubuğu gösterir.</span>
+              </div>
+              <label class="switch"><input type="checkbox" id="chk_pdfNotes" checked><span class="switch-slider"></span></label>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-info">
+                <span class="feature-name" data-i18n="autoPipTitle">📺 OTOMATİK PİP (YÜZEN VİDEO)</span>
+                <span class="feature-desc" data-i18n="autoPipDesc">Video oynarken başka sekmeye geçince videoyu otomatik küçük yüzen pencereye alır.</span>
+              </div>
+              <label class="switch"><input type="checkbox" id="chk_autoPip" checked><span class="switch-slider"></span></label>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-info">
+                <span class="feature-name" data-i18n="linkGlowTitle">⚡ AÇIK LİNK TESPİTİ</span>
+                <span class="feature-desc" data-i18n="linkGlowDesc">Başka sekmede açık olan linklerin üzerine gelince sade sekme rozeti gösterir.</span>
+              </div>
+              <label class="switch"><input type="checkbox" id="chk_linkGlow" checked><span class="switch-slider"></span></label>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-info">
+                <span class="feature-name" data-i18n="ramCpuTitle">⚡ RAM & CPU ARAÇ ÇUBUĞU ROZETİ</span>
+                <span class="feature-desc" data-i18n="ramCpuDesc">Eklenti simgesi üzerinde anlık RAM ve CPU kullanımını gösterir.</span>
+              </div>
+              <label class="switch"><input type="checkbox" id="chk_ramCpuMonitor" checked><span class="switch-slider"></span></label>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-info">
+                <span class="feature-name" data-i18n="smartGroupingTitle">🏷️ AKILLI SEKME GRUPLAMA</span>
+                <span class="feature-desc" data-i18n="smartGroupingDesc">Aynı siteden açılan sekmeleri otomatik olarak renklendirip gruplandırır.</span>
+              </div>
+              <label class="switch"><input type="checkbox" id="chk_smartTabGrouping" checked><span class="switch-slider"></span></label>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-info">
+                <span class="feature-name" data-i18n="tabSearchTitle">🔍 SEKME ARAMA KISAYOLU (Ctrl+Shift+F)</span>
+                <span class="feature-desc" data-i18n="tabSearchDesc">Tüm açık sekmeler arasında klavye kısayoluyla anında arama yapmayı sağlar.</span>
+              </div>
+              <label class="switch"><input type="checkbox" id="chk_tabSearchShortcut" checked><span class="switch-slider"></span></label>
+            </div>
+          </div>
+
+          <!-- 2. SEKME: SES & MÜZİK EFEKTLERİ -->
+          <div class="suite-tab-pane" id="tab-audio">
+            <div class="audio-control-card">
+              <div class="feature-item" style="border-bottom:none; padding:0; margin-bottom: 12px;">
+                <div class="feature-info">
+                  <span class="feature-name" data-i18n="openSoundTitle">🔔 SEKME AÇILIŞ SESİ</span>
+                  <span class="feature-desc" data-i18n="openSoundDesc">Yeni bir sekme açıldığında ses efekti çalar.</span>
+                </div>
+                <label class="switch"><input type="checkbox" id="chk_openSound" checked><span class="switch-slider"></span></label>
+              </div>
+
+              <div class="audio-form-row">
+                <div class="audio-select-col">
+                  <label class="audio-label" data-i18n="soundProfile">Ses Profili:</label>
+                  <select id="openSoundType" class="form-input-select">
+                    <option value="pop">✨ Soft Pop (Modern)</option>
+                    <option value="gx_click">🔥 Opera GX Mekanik Tık</option>
+                    <option value="gx_chime">🎵 Melodik Çan (GX Chime)</option>
+                    <option value="gx_woosh">💨 Woosh Rüzgarı</option>
+                    <option value="custom">📁 Özel Ses Yükle (.mp3 / .wav)</option>
+                  </select>
+                </div>
+                <div class="audio-volume-col">
+                  <div class="vol-label-row">
+                    <span class="audio-label" data-i18n="soundLevel">Seviye:</span>
+                    <span id="openVolVal" class="vol-number">60%</span>
+                  </div>
+                  <input type="range" id="openSoundVolume" min="0" max="1" step="0.05" value="0.6" class="volume-range">
+                </div>
+              </div>
+
+              <div id="openCustomBox" class="custom-audio-uploader" style="display:none;">
+                <input type="file" id="openFileInput" accept="audio/*" style="display:none;">
+                <button type="button" class="btn-secondary" id="openUploadBtn" data-i18n="customSoundBtn">🎵 Kendi Ses Dosyanı Seç</button>
+                <span id="openFileName" class="file-name-label"></span>
+              </div>
+
+              <div class="audio-card-footer">
+                <button type="button" class="btn-test-sound" id="testOpenSoundBtn" data-i18n="testOpenSound">Açılış Sesini Test Et 🔊</button>
+              </div>
+            </div>
+
+            <div class="audio-control-card">
+              <div class="feature-item" style="border-bottom:none; padding:0; margin-bottom: 12px;">
+                <div class="feature-info">
+                  <span class="feature-name" data-i18n="closeSoundTitle">🔕 SEKME KAPANIŞ SESİ</span>
+                  <span class="feature-desc" data-i18n="closeSoundDesc">Bir sekme kapatıldığında ses efekti çalar.</span>
+                </div>
+                <label class="switch"><input type="checkbox" id="chk_closeSound" checked><span class="switch-slider"></span></label>
+              </div>
+
+              <div class="audio-form-row">
+                <div class="audio-select-col">
+                  <label class="audio-label" data-i18n="soundProfile">Ses Profili:</label>
+                  <select id="closeSoundType" class="form-input-select">
+                    <option value="gx_click">🔥 Opera GX Mekanik Tık</option>
+                    <option value="pop">✨ Soft Pop</option>
+                    <option value="gx_chime">🎵 Melodik Çan</option>
+                    <option value="gx_woosh">💨 Woosh Rüzgarı</option>
+                    <option value="custom">📁 Özel Ses Yükle (.mp3 / .wav)</option>
+                  </select>
+                </div>
+                <div class="audio-volume-col">
+                  <div class="vol-label-row">
+                    <span class="audio-label" data-i18n="soundLevel">Seviye:</span>
+                    <span id="closeVolVal" class="vol-number">60%</span>
+                  </div>
+                  <input type="range" id="closeSoundVolume" min="0" max="1" step="0.05" value="0.6" class="volume-range">
+                </div>
+              </div>
+
+              <div id="closeCustomBox" class="custom-audio-uploader" style="display:none;">
+                <input type="file" id="closeFileInput" accept="audio/*" style="display:none;">
+                <button type="button" class="btn-secondary" id="closeUploadBtn" data-i18n="customSoundBtn">🎵 Kendi Ses Dosyanı Seç</button>
+                <span id="closeFileName" class="file-name-label"></span>
+              </div>
+
+              <div class="audio-card-footer">
+                <button type="button" class="btn-test-sound" id="testCloseSoundBtn" data-i18n="testCloseSound">Kapanış Sesini Test Et 🔊</button>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-info">
+                <span class="feature-name" data-i18n="musicPulseTitle">🎶 MÜZİK VURUŞ ANİMASYONU</span>
+                <span class="feature-desc" data-i18n="musicPulseDesc">Müzik çalan sekmelerde ritmik nabız/vuruş animasyonu gösterir.</span>
+              </div>
+              <label class="switch"><input type="checkbox" id="chk_musicPulseAnimation" checked><span class="switch-slider"></span></label>
+            </div>
+          </div>
+
+          <!-- 3. SEKME: DÜNYA SAATLERİ & ŞEHİR YÖNETİMİ -->
+          <div class="suite-tab-pane" id="tab-world">
+            <div class="world-city-add-card">
+              <h4 style="margin: 0 0 6px 0; color: #fff; font-size: 14px;" data-i18n="addCityTitle">Şehir Ekle (Saat & Hava Durumu)</h4>
+              <p style="margin: 0 0 14px 0; font-size: 12px; color: var(--text-secondary);" data-i18n="addCityDesc">
+                Dilediğiniz şehri ekleyin; yerel saat ve hava durumu otomatik hesaplanacaktır.
+              </p>
+              <div class="add-city-form-row">
+                <input type="text" id="newCityNameInput" class="form-input" placeholder="Şehir adı yazın (örn: Londra, New York, Tokyo)">
+                <button type="button" class="btn-primary" id="addNewCityBtn" data-i18n="addCityBtn">➕ Şehir Ekle</button>
+              </div>
+            </div>
+
+            <div class="city-manager-section">
+              <h4 style="margin: 0 0 10px 0; font-size: 13px; color: var(--text-tertiary);" data-i18n="activeCities">Aktif Şehirler</h4>
+              <div class="city-manager-list" id="cityManagerList">
+                <!-- JS tarafından aktif şehirler silme butonuyla listelenir -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. SEKME: GÖRÜNÜM & TUVAL YERLEŞİMİ -->
+          <div class="suite-tab-pane" id="tab-appearance">
+            <div class="settings-group">
+              <label class="group-title" data-i18n="clockType">Saat Türü</label>
+              <div class="segmented-control">
+                <button type="button" class="segment-btn active" id="btnClockDigital" data-i18n="digital">Dijital</button>
+                <button type="button" class="segment-btn" id="btnClockAnalog" data-i18n="analog">Analog</button>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <label class="group-title" data-i18n="bgTheme">Arka Plan Teması</label>
+              <select id="bgThemeSelect" class="form-input-select">
+                <option value="cyber">Siber Koyu / Cyber Dark</option>
+                <option value="deep_space">Derin Uzay / Deep Space</option>
+                <option value="neon_sunset">Neon Günbatımı / Neon Sunset</option>
+                <option value="aurora">Kuzey Işıkları / Aurora</option>
+                <option value="midnight">Gece Mavisi / Midnight</option>
+                <option value="solid_black">Düz Koyu Siyah (#09090b)</option>
+                <option value="solid_zinc">Düz Füme (#141417)</option>
+                <option value="custom_image">🖼️ Özel Resim / Custom Image</option>
+              </select>
+
+              <div id="imageUploadArea" class="image-upload-wrapper" style="display: none;">
+                <input type="file" id="bgFileInput" accept="image/*" style="display: none;">
+                <button type="button" class="btn-secondary" id="btnSelectBgFile" data-i18n="selectImageBtn">📁 Resim Seç (Maks. 10MB)</button>
+                <div id="bgLoadingSpinner" class="loading-status" style="display: none;">
+                  <span class="spinner-ring"></span> Resim kaydediliyor...
+                </div>
+                <div id="bgFileStatus" class="file-status-label"></div>
+                <button type="button" class="btn-danger" id="btnRemoveCustomBg" style="display: none;" data-i18n="removeCustomBgBtn">Özel Resmi Kaldır</button>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <label class="group-title">Aktif Widget'lar & Tuval Düzeni</label>
+              <div class="toggle-list" id="widgetConfigList">
+                <div class="switch-row" data-widget-row="clock">
+                  <span data-i18n="widgetClock">Saat ve Tarih</span>
+                  <label class="switch"><input type="checkbox" id="chk_clock" checked><span class="switch-slider"></span></label>
+                </div>
+                <div class="switch-row" data-widget-row="search">
+                  <span data-i18n="widgetSearch">Arama Çubuğu</span>
+                  <label class="switch"><input type="checkbox" id="chk_search" checked><span class="switch-slider"></span></label>
+                </div>
+                <div class="switch-row" data-widget-row="shortcuts">
+                  <span data-i18n="widgetShortcuts">Sabitlenmiş Sekmeler (Speed Dial)</span>
+                  <label class="switch"><input type="checkbox" id="chk_shortcuts" checked><span class="switch-slider"></span></label>
+                </div>
+                <div class="switch-row" data-widget-row="weather">
+                  <span data-i18n="widgetWeather">Dünya Saatleri & Hava Durumu</span>
+                  <label class="switch"><input type="checkbox" id="chk_weather" checked><span class="switch-slider"></span></label>
+                </div>
+                <div class="switch-row" data-widget-row="todo">
+                  <span data-i18n="widgetTodo">Yapılacaklar & Notlar</span>
+                  <label class="switch"><input type="checkbox" id="chk_todo" checked><span class="switch-slider"></span></label>
+                </div>
+                <div class="switch-row" data-widget-row="system">
+                  <span data-i18n="widgetSystem">Sistem Monitörü (RAM/CPU)</span>
+                  <label class="switch"><input type="checkbox" id="chk_system" checked><span class="switch-slider"></span></label>
+                </div>
+              </div>
+              <button type="button" class="btn-secondary" id="btnResetLayout" style="margin-top: 14px; width: 100%;">
+                🔄 <span>Yerleşimi Varsayılan Konumlara Sıfırla</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 5. SEKME: SABİTLENMİŞ SEKME & KISAYOL YÖNETİMİ -->
+          <div class="suite-tab-pane" id="tab-shortcuts">
+            <div class="world-city-add-card">
+              <h4 style="margin: 0 0 6px 0; color: #fff; font-size: 14px;" data-i18n="newShortcut">Yeni Sekme Ekle</h4>
+              <div style="display: grid; grid-template-columns: 1fr 1.5fr auto; gap: 8px; margin-top: 10px;">
+                <input type="text" id="suiteNewShortcutTitle" class="form-input" placeholder="Başlık (örn: GitHub)">
+                <input type="text" id="suiteNewShortcutUrl" class="form-input" placeholder="URL (örn: https://github.com)">
+                <button type="button" class="btn-primary" id="suiteAddShortcutBtn" data-i18n="add">Ekle</button>
+              </div>
+            </div>
+
+            <div class="city-manager-section">
+              <h4 style="margin: 0 0 10px 0; font-size: 13px; color: var(--text-tertiary);" data-i18n="shortcutsList">Sabitlenmiş Sekmeler Listesi</h4>
+              <div class="city-manager-list" id="shortcutManagerList">
+                <!-- JS ile listelenir -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. SEKME: SİSTEM & BELLEK OPTİMİZASYONU -->
+          <div class="suite-tab-pane" id="tab-privacy">
+            <div class="privacy-stats-card">
+              <h4 style="margin: 0 0 10px 0; color: #fff; font-size: 14px;" data-i18n="quickActionsTitle">Hızlı Sistem & Bellek Eylemleri</h4>
+              <div class="quick-action-buttons-row">
+                <button type="button" class="btn-primary-action" id="btnCloseDuplicatesBtn">
+                  <span>🧹</span> <span data-i18n="closeDuplicatesBtn">Çift Açık Sekmeleri Kapat</span>
+                </button>
+                <button type="button" class="btn-primary-action" id="btnFreeMemoryBtn">
+                  <span>⚡</span> <span data-i18n="freeMemoryBtn">RAM'i Boşalt (Sekmeleri Uyut)</span>
+                </button>
+              </div>
+              <div id="actionFeedbackToast" class="action-toast-feedback" style="display: none;"></div>
+            </div>
+
+            <div class="privacy-stats-card">
+              <h4 style="margin: 0 0 12px 0; color: #fff; font-size: 14px;" data-i18n="systemStatsTitle">Sistem Kaynak Kullanımı</h4>
+              <div class="stats-grid">
+                <div class="stat-pill">
+                  <span class="stat-pill-label" data-i18n="ramUsage">RAM Kullanımı</span>
+                  <span class="stat-pill-val" id="suiteRamStat">-- GB / -- GB</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-pill-label" data-i18n="cpuUsage">CPU Kullanımı</span>
+                  <span class="stat-pill-val" id="suiteCpuStat">0%</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-pill-label" data-i18n="blockedTrackers">Bugün Engellenen İzleyiciler</span>
+                  <span class="stat-pill-val text-accent" id="suiteTrackerStat">184+ Engellendi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="newtab.js"></script>
+</body>
+</html>
