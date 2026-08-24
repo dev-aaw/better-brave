@@ -479,7 +479,7 @@
     <div class="top-actions">
       <button class="mute-all-btn" id="muteAllBtn">
         <span id="muteAllIcon">🔊</span>
-        <span id="muteAllText">Tümünü Sustur</span>
+        <span id="muteAllText" data-i18n="muteAll">Tümünü Sustur</span>
       </button>
     </div>
   </header>
@@ -487,7 +487,7 @@
   <!-- 1. RAM / CPU Monitörü -->
   <div class="card" id="ramCpuCard">
     <div class="card-header">
-      <span class="card-title">⚡ RAM & CPU Monitörü</span>
+      <span class="card-title" data-i18n="cardRam">⚡ RAM & CPU Monitörü</span>
       <label class="switch">
         <input type="checkbox" id="ramCpuMonitorEnabled">
         <span class="slider"></span>
@@ -495,21 +495,21 @@
     </div>
     <div id="ramCpuStatsContainer">
       <div class="stat-row">
-        <span>RAM Kullanımı</span>
+        <span data-i18n="ramUsage">RAM Kullanımı</span>
         <span id="ramStatText" style="font-weight:700;">-- / --</span>
       </div>
       <div class="stat-bar-bg">
         <div class="stat-bar-fill" id="ramBarFill"></div>
       </div>
       <div class="stat-row">
-        <span>CPU Yükü (<span id="cpuCoresText">4</span> Çekirdek)</span>
+        <span><span data-i18n="cpuLoad">CPU Yükü</span> (<span id="cpuCoresText">4</span> <span data-i18n="cores">Çekirdek</span>)</span>
         <span id="cpuStatText" style="font-weight:700;">0%</span>
       </div>
       <div class="stat-bar-bg">
         <div class="stat-bar-fill" id="cpuBarFill" style="background:#38bdf8; width:10%;"></div>
       </div>
     </div>
-    <div id="ramCpuDisabledMsg" style="display: none; font-size: 11.5px; color: var(--text-muted); text-align: center; padding: 12px 0; background: #141417; border-radius: 6px; margin-top: 4px;">
+    <div id="ramCpuDisabledMsg" data-i18n="ramCpuDisabled" style="display: none; font-size: 11.5px; color: var(--text-muted); text-align: center; padding: 12px 0; background: #141417; border-radius: 6px; margin-top: 4px;">
       ⚡ Canlı Rozet ve Monitör Devre Dışı
     </div>
   </div>
@@ -517,12 +517,12 @@
   <!-- 2. Sekme Arama -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">🔍 Sekme Arama</span>
+      <span class="card-title" data-i18n="cardTabSearch">🔍 Sekme Arama</span>
       <span style="font-size: 10px; color: var(--text-muted);">Ctrl+Shift+F</span>
     </div>
     <div class="search-box">
       <span class="search-icon">🔍</span>
-      <input type="text" id="tabSearchInput" class="search-input" placeholder="Açık sekmelerde başlık veya URL ara...">
+      <input type="text" id="tabSearchInput" class="search-input" data-i18n-ph="searchPlaceholder" placeholder="Açık sekmelerde başlık veya URL ara...">
     </div>
     <div class="search-results" id="searchResults"></div>
   </div>
@@ -530,41 +530,41 @@
   <!-- 3. Hangi Sekmede Ses Çalıyor -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">🔊 Ses Çalan Sekmeler</span>
+      <span class="card-title" data-i18n="cardAudioTabs">🔊 Ses Çalan Sekmeler</span>
       <span id="audioTabCount" style="font-size: 10.5px; color: var(--accent);">0 Sekme</span>
     </div>
     <div class="audio-tab-list" id="audioTabList">
-      <div class="no-results-msg">Şu an ses çalan sekme yok</div>
+      <div class="no-results-msg" data-i18n="noAudioTabs">Şu an ses çalan sekme yok</div>
     </div>
   </div>
 
   <!-- 4. Sekme Gruplama & Renk Kodlama -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">🏷️ Sekme Grupları</span>
-      <span style="font-size: 10px; color: var(--text-muted);">Aktif Sekmeyi Ekle</span>
+      <span class="card-title" data-i18n="cardTabGroups">🏷️ Sekme Grupları</span>
+      <span style="font-size: 10px; color: var(--text-muted);" data-i18n="addActiveTab">Aktif Sekmeyi Ekle</span>
     </div>
     <div class="group-presets">
-      <button class="preset-btn" data-name="İş" data-color="blue"><span class="color-dot" style="background:#3b82f6;"></span>İş</button>
-      <button class="preset-btn" data-name="Eğlence" data-color="red"><span class="color-dot" style="background:#ef4444;"></span>Eğlence</button>
-      <button class="preset-btn" data-name="Alışveriş" data-color="green"><span class="color-dot" style="background:#22c55e;"></span>Alışveriş</button>
-      <button class="preset-btn" data-name="Sosyal" data-color="purple"><span class="color-dot" style="background:#a855f7;"></span>Sosyal</button>
-      <button class="preset-btn" data-name="Araştırma" data-color="yellow"><span class="color-dot" style="background:#eab308;"></span>Araştırma</button>
+      <button class="preset-btn" data-name="İş" data-name-en="Work" data-name-de="Arbeit" data-name-es="Trabajo" data-name-fr="Travail" data-color="blue"><span class="color-dot" style="background:#3b82f6;"></span><span data-i18n="groupWork">İş</span></button>
+      <button class="preset-btn" data-name="Eğlence" data-name-en="Fun" data-name-de="Unterhaltung" data-name-es="Ocio" data-name-fr="Divertissement" data-color="red"><span class="color-dot" style="background:#ef4444;"></span><span data-i18n="groupFun">Eğlence</span></button>
+      <button class="preset-btn" data-name="Alışveriş" data-name-en="Shopping" data-name-de="Einkaufen" data-name-es="Compras" data-name-fr="Achats" data-color="green"><span class="color-dot" style="background:#22c55e;"></span><span data-i18n="groupShop">Alışveriş</span></button>
+      <button class="preset-btn" data-name="Sosyal" data-name-en="Social" data-name-de="Soziales" data-name-es="Social" data-name-fr="Social" data-color="purple"><span class="color-dot" style="background:#a855f7;"></span><span data-i18n="groupSocial">Sosyal</span></button>
+      <button class="preset-btn" data-name="Araştırma" data-name-en="Research" data-name-de="Recherche" data-name-es="Estudio" data-name-fr="Recherche" data-color="yellow"><span class="color-dot" style="background:#eab308;"></span><span data-i18n="groupResearch">Araştırma</span></button>
     </div>
     <div class="custom-group-row">
-      <input type="text" id="customGroupName" class="group-input" placeholder="Grup Adı...">
+      <input type="text" id="customGroupName" class="group-input" data-i18n-ph="customGroupNamePlaceholder" placeholder="Grup Adı...">
       <select id="customGroupColor" class="color-select">
-        <option value="blue">Mavi</option>
-        <option value="red">Kırmızı</option>
-        <option value="green">Yeşil</option>
-        <option value="yellow">Sarı</option>
-        <option value="purple">Mor</option>
-        <option value="pink">Pembe</option>
-        <option value="cyan">Camgöbeği</option>
-        <option value="orange">Turuncu</option>
-        <option value="grey">Gri</option>
+        <option value="blue" data-i18n="colorBlue">Mavi</option>
+        <option value="red" data-i18n="colorRed">Kırmızı</option>
+        <option value="green" data-i18n="colorGreen">Yeşil</option>
+        <option value="yellow" data-i18n="colorYellow">Sarı</option>
+        <option value="purple" data-i18n="colorPurple">Mor</option>
+        <option value="pink" data-i18n="colorPink">Pembe</option>
+        <option value="cyan" data-i18n="colorCyan">Camgöbeği</option>
+        <option value="orange" data-i18n="colorOrange">Turuncu</option>
+        <option value="grey" data-i18n="colorGrey">Gri</option>
       </select>
-      <button id="addCustomGroupBtn" class="add-group-btn">Ekle</button>
+      <button id="addCustomGroupBtn" class="add-group-btn" data-i18n="addBtn">Ekle</button>
     </div>
     <div class="active-groups-list" id="activeGroupsList"></div>
   </div>
@@ -572,16 +572,16 @@
   <!-- 5. Tracker & Gizlilik Özeti -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">🛡️ Tracker & Gizlilik Özeti</span>
-      <span style="font-size: 10px; color: var(--success); font-weight:700;">Korumalı</span>
+      <span class="card-title" data-i18n="cardPrivacy">🛡️ Tracker & Gizlilik Özeti</span>
+      <span style="font-size: 10px; color: var(--success); font-weight:700;" data-i18n="protectedBadge">Korumalı</span>
     </div>
     <div class="tracker-box">
       <div>
-        <div style="font-size:11px; color:var(--text-muted);">Bugün Engellenen Tracker</div>
+        <div style="font-size:11px; color:var(--text-muted);" data-i18n="trackersBlockedToday">Bugün Engellenen Tracker</div>
         <div class="tracker-count" id="todayTrackerCount">184</div>
       </div>
       <div style="text-align: right;">
-        <div style="font-size:11px; color:var(--text-muted);">Mevcut Sitede</div>
+        <div style="font-size:11px; color:var(--text-muted);" data-i18n="onCurrentSite">Mevcut Sitede</div>
         <div style="font-size:14px; font-weight:700; color:#fff;" id="currentSiteTrackers">6</div>
       </div>
     </div>
@@ -590,117 +590,117 @@
   <!-- 6. Müzik Notası Animasyonu -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">🎵 Müzik Çalma Göstergesi</span>
+      <span class="card-title" data-i18n="cardMusicIndicator">🎵 Müzik Çalma Göstergesi</span>
       <label class="switch">
         <input type="checkbox" id="musicIndicatorEnabled">
         <span class="slider"></span>
       </label>
     </div>
-    <p class="hint-text">Müzik/ses çalan sekmelerin başlığında animasyonlu müzik notası (🎵, 🎶) gösterir.</p>
+    <p class="hint-text" data-i18n="musicIndicatorDesc">Müzik/ses çalan sekmelerin başlığında animasyonlu müzik notası (🎵, 🎶) gösterir.</p>
   </div>
 
   <!-- 7. PDF Not Alma & Highlight -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">📝 PDF & Sayfa Not Alma</span>
+      <span class="card-title" data-i18n="cardPdfNotes">📝 PDF & Sayfa Not Alma</span>
       <label class="switch">
         <input type="checkbox" id="pdfNotesEnabled">
         <span class="slider"></span>
       </label>
     </div>
-    <p class="hint-text">PDF veya sayfalarda metin seçtiğinizde sarı/mavi/yeşil highlight araç çubuğu gösterir, notları kaydeder ve dışa aktarır.</p>
+    <p class="hint-text" data-i18n="pdfNotesDesc">PDF veya sayfalarda metin seçtiğinizde sarı/mavi/yeşil highlight araç çubuğu gösterir, notları kaydeder ve dışa aktarır.</p>
   </div>
 
   <!-- 8. Otomatik PiP -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">📺 Otomatik PiP (Yüzen Video)</span>
+      <span class="card-title" data-i18n="cardAutoPip">📺 Otomatik PiP (Yüzen Video)</span>
       <label class="switch">
         <input type="checkbox" id="autoPipEnabled">
         <span class="slider"></span>
       </label>
     </div>
-    <p class="hint-text">Video oynarken başka sekmeye geçince videoyu otomatik küçük yüzen pencereye alır, geri dönünce kapatır.</p>
+    <p class="hint-text" data-i18n="autoPipDesc">Video oynarken başka sekmeye geçince videoyu otomatik küçük yüzen pencereye alır, geri dönünce kapatır.</p>
   </div>
 
   <!-- 9. Açık Sekme Göstergesi -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">⚡ Açık Link Tespiti</span>
+      <span class="card-title" data-i18n="cardLinkGlow">⚡ Açık Link Tespiti</span>
       <label class="switch">
         <input type="checkbox" id="linkGlowEnabled">
         <span class="slider"></span>
       </label>
     </div>
-    <p class="hint-text">Başka sekmede açık olan linklerin üzerine gelince sade sekme rozeti gösterir ve sekme başlığını ⚡ ile titreştirir.</p>
+    <p class="hint-text" data-i18n="linkGlowDesc">Başka sekmede açık olan linklerin üzerine gelince sade sekme rozeti gösterir ve sekme başlığını ⚡ ile titreştirir.</p>
   </div>
 
   <!-- 10. Sekme Açılış Sesi -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">🔔 Sekme Açılış Sesi</span>
+      <span class="card-title" data-i18n="cardOpenSound">🔔 Sekme Açılış Sesi</span>
       <label class="switch">
         <input type="checkbox" id="openSoundEnabled">
         <span class="slider"></span>
       </label>
     </div>
     <div class="row">
-      <label style="font-size: 11.5px;">Ses Profili</label>
+      <label style="font-size: 11.5px;" data-i18n="soundProfile">Ses Profili</label>
       <select id="openSoundType" class="sound-select">
-        <option value="pop">Pop (Yumuşak)</option>
+        <option value="pop">Pop</option>
         <option value="gx_click">Cyber Click</option>
         <option value="gx_chime">Modern Chime</option>
         <option value="gx_woosh">Sci-Fi Woosh</option>
-        <option value="custom">📁 Özel Ses Yükle...</option>
+        <option value="custom" data-i18n="customSoundOpt">📁 Özel Ses...</option>
       </select>
     </div>
     <div id="openCustomBox" class="custom-file-box">
       <input type="file" id="openFileInput" accept=".mp3,.wav,.ogg" style="display: none;">
-      <button class="upload-btn" id="openUploadBtn">🎵 Ses Dosyası Seç (mp3/wav)</button>
+      <button class="upload-btn" id="openUploadBtn" data-i18n="uploadAudioBtn">🎵 Ses Dosyası Seç (mp3/wav)</button>
       <span id="openFileName" class="file-name-label"></span>
     </div>
     <div style="margin-top: 4px;">
       <div class="slider-wrap">
-        <label style="font-size: 10.5px; color: var(--text-muted);">Seviye</label>
+        <label style="font-size: 10.5px; color: var(--text-muted);" data-i18n="volumeLabel">Seviye</label>
         <input type="range" id="openSoundVolume" min="0.05" max="1" step="0.05" value="0.6">
         <span id="openVolVal" class="vol-text">60%</span>
       </div>
     </div>
-    <button class="test-btn" id="testOpenSoundBtn">Açılış Sesini Test Et 🔊</button>
+    <button class="test-btn" id="testOpenSoundBtn" data-i18n="testOpenSound">Açılış Sesini Test Et 🔊</button>
   </div>
 
   <!-- 11. Sekme Kapanış Sesi -->
   <div class="card">
     <div class="card-header">
-      <span class="card-title">🔕 Sekme Kapanış Sesi</span>
+      <span class="card-title" data-i18n="cardCloseSound">🔕 Sekme Kapanış Sesi</span>
       <label class="switch">
         <input type="checkbox" id="closeSoundEnabled">
         <span class="slider"></span>
       </label>
     </div>
     <div class="row">
-      <label style="font-size: 11.5px;">Ses Profili</label>
+      <label style="font-size: 11.5px;" data-i18n="soundProfile">Ses Profili</label>
       <select id="closeSoundType" class="sound-select">
         <option value="gx_click">Cyber Click</option>
-        <option value="pop">Pop (Yumuşak)</option>
+        <option value="pop">Pop</option>
         <option value="gx_chime">Modern Chime</option>
         <option value="gx_woosh">Sci-Fi Woosh</option>
-        <option value="custom">📁 Özel Ses Yükle...</option>
+        <option value="custom" data-i18n="customSoundOpt">📁 Özel Ses...</option>
       </select>
     </div>
     <div id="closeCustomBox" class="custom-file-box">
       <input type="file" id="closeFileInput" accept=".mp3,.wav,.ogg" style="display: none;">
-      <button class="upload-btn" id="closeUploadBtn">🎵 Ses Dosyası Seç (mp3/wav)</button>
+      <button class="upload-btn" id="closeUploadBtn" data-i18n="uploadAudioBtn">🎵 Ses Dosyası Seç (mp3/wav)</button>
       <span id="closeFileName" class="file-name-label"></span>
     </div>
     <div style="margin-top: 4px;">
       <div class="slider-wrap">
-        <label style="font-size: 10.5px; color: var(--text-muted);">Seviye</label>
+        <label style="font-size: 10.5px; color: var(--text-muted);" data-i18n="volumeLabel">Seviye</label>
         <input type="range" id="closeSoundVolume" min="0.05" max="1" step="0.05" value="0.6">
         <span id="closeVolVal" class="vol-text">60%</span>
       </div>
     </div>
-    <button class="test-btn" id="testCloseSoundBtn">Kapanış Sesini Test Et 🔊</button>
+    <button class="test-btn" id="testCloseSoundBtn" data-i18n="testCloseSound">Kapanış Sesini Test Et 🔊</button>
   </div>
 
   <script src="popup.js"></script>

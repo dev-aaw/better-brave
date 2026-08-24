@@ -1,6 +1,353 @@
-// Better Brave Suite: Comprehensive Popup Controller
+// Better Brave Suite: Comprehensive Multilingual Popup Controller
+
+const popupI18n = {
+  tr: {
+    muteAll: "Tümünü Sustur",
+    unmuteAll: "Sesi Aç",
+    cardRam: "⚡ RAM & CPU Monitörü",
+    ramUsage: "RAM Kullanımı",
+    cpuLoad: "CPU Yükü",
+    cores: "Çekirdek",
+    ramCpuDisabled: "⚡ Canlı Rozet ve Monitör Devre Dışı",
+    cardTabSearch: "🔍 Sekme Arama",
+    searchPlaceholder: "Açık sekmelerde başlık veya URL ara...",
+    noResultsFound: "Eşleşen sekme bulunamadı",
+    tabActiveBadge: "Aktif",
+    cardAudioTabs: "🔊 Ses Çalan Sekmeler",
+    tabCountSuffix: "Sekme",
+    noAudioTabs: "Şu an ses çalan sekme yok",
+    mutedState: "🔇 Sessize Alındı",
+    playingState: "🔊 Ses Çalıyor",
+    unmuteBtn: "🔊 Aç",
+    muteBtn: "🔇 Sustur",
+    cardTabGroups: "🏷️ Sekme Grupları",
+    addActiveTab: "Aktif Sekmeyi Ekle",
+    groupWork: "İş",
+    groupFun: "Eğlence",
+    groupShop: "Alışveriş",
+    groupSocial: "Sosyal",
+    groupResearch: "Araştırma",
+    customGroupNamePlaceholder: "Grup Adı...",
+    addBtn: "Ekle",
+    ungroupBtn: "Dağıt",
+    colorBlue: "Mavi",
+    colorRed: "Kırmızı",
+    colorGreen: "Yeşil",
+    colorYellow: "Sarı",
+    colorPurple: "Mor",
+    colorPink: "Pembe",
+    colorCyan: "Camgöbeği",
+    colorOrange: "Turuncu",
+    colorGrey: "Gri",
+    cardPrivacy: "🛡️ Tracker & Gizlilik Özeti",
+    protectedBadge: "Korumalı",
+    trackersBlockedToday: "Bugün Engellenen Tracker",
+    onCurrentSite: "Mevcut Sitede",
+    cardMusicIndicator: "🎵 Müzik Çalma Göstergesi",
+    musicIndicatorDesc: "Müzik/ses çalan sekmelerin başlığında animasyonlu müzik notası (🎵, 🎶) gösterir.",
+    cardPdfNotes: "📝 PDF & Sayfa Not Alma",
+    pdfNotesDesc: "PDF veya sayfalarda metin seçtiğinizde sarı/mavi/yeşil highlight araç çubuğu gösterir, notları kaydeder ve dışa aktarır.",
+    cardAutoPip: "📺 Otomatik PiP (Yüzen Video)",
+    autoPipDesc: "Video oynarken başka sekmeye geçince videoyu otomatik küçük yüzen pencereye alır, geri dönünce kapatır.",
+    cardLinkGlow: "⚡ Açık Link Tespiti",
+    linkGlowDesc: "Başka sekmede açık olan linklerin üzerine gelince sade sekme rozeti gösterir ve sekme başlığını ⚡ ile titreştirir.",
+    cardOpenSound: "🔔 Sekme Açılış Sesi",
+    cardCloseSound: "🔕 Sekme Kapanış Sesi",
+    soundProfile: "Ses Profili",
+    customSoundOpt: "📁 Özel Ses...",
+    uploadAudioBtn: "🎵 Ses Dosyası Seç (mp3/wav)",
+    volumeLabel: "Seviye",
+    testOpenSound: "Açılış Sesini Test Et 🔊",
+    testCloseSound: "Kapanış Sesini Test Et 🔊",
+    installedPrefix: "Yüklü: "
+  },
+  en: {
+    muteAll: "Mute All Tabs",
+    unmuteAll: "Unmute All",
+    cardRam: "⚡ RAM & CPU Monitor",
+    ramUsage: "RAM Usage",
+    cpuLoad: "CPU Load",
+    cores: "Cores",
+    ramCpuDisabled: "⚡ Live Badge & Monitor Disabled",
+    cardTabSearch: "🔍 Search Open Tabs",
+    searchPlaceholder: "Search title or URL across tabs...",
+    noResultsFound: "No matching tabs found",
+    tabActiveBadge: "Active",
+    cardAudioTabs: "🔊 Audio Playing Tabs",
+    tabCountSuffix: "Tabs",
+    noAudioTabs: "No tabs currently playing audio",
+    mutedState: "🔇 Muted",
+    playingState: "🔊 Playing Audio",
+    unmuteBtn: "🔊 Unmute",
+    muteBtn: "🔇 Mute",
+    cardTabGroups: "🏷️ Tab Groups",
+    addActiveTab: "Add Active Tab",
+    groupWork: "Work",
+    groupFun: "Fun",
+    groupShop: "Shopping",
+    groupSocial: "Social",
+    groupResearch: "Research",
+    customGroupNamePlaceholder: "Group Name...",
+    addBtn: "Add",
+    ungroupBtn: "Ungroup",
+    colorBlue: "Blue",
+    colorRed: "Red",
+    colorGreen: "Green",
+    colorYellow: "Yellow",
+    colorPurple: "Purple",
+    colorPink: "Pink",
+    colorCyan: "Cyan",
+    colorOrange: "Orange",
+    colorGrey: "Grey",
+    cardPrivacy: "🛡️ Privacy & Tracker Summary",
+    protectedBadge: "Protected",
+    trackersBlockedToday: "Trackers Blocked Today",
+    onCurrentSite: "On This Site",
+    cardMusicIndicator: "🎵 Music Playing Indicator",
+    musicIndicatorDesc: "Shows animated music notes in tab titles playing audio.",
+    cardPdfNotes: "📝 PDF & Text Highlighter",
+    pdfNotesDesc: "Displays highlight toolbar when selecting text on pages or PDFs.",
+    cardAutoPip: "📺 Automatic PiP (Floating Video)",
+    autoPipDesc: "Automatically floats playing videos when switching tabs.",
+    cardLinkGlow: "⚡ Open Link Detector",
+    linkGlowDesc: "Shows subtle badge when hovering links already opened in other tabs.",
+    cardOpenSound: "🔔 Tab Open Sound",
+    cardCloseSound: "🔕 Tab Close Sound",
+    soundProfile: "Sound Profile",
+    customSoundOpt: "📁 Custom Sound...",
+    uploadAudioBtn: "🎵 Select Audio File (mp3/wav)",
+    volumeLabel: "Volume",
+    testOpenSound: "Test Open Sound 🔊",
+    testCloseSound: "Test Close Sound 🔊",
+    installedPrefix: "Loaded: "
+  },
+  de: {
+    muteAll: "Alle stummschalten",
+    unmuteAll: "Stummschaltung aufheben",
+    cardRam: "⚡ RAM & CPU Monitor",
+    ramUsage: "RAM-Nutzung",
+    cpuLoad: "CPU-Last",
+    cores: "Kerne",
+    ramCpuDisabled: "⚡ Live-Badge & Monitor deaktiviert",
+    cardTabSearch: "🔍 Tabs durchsuchen",
+    searchPlaceholder: "Titel oder URL durchsuchen...",
+    noResultsFound: "Keine Tabs gefunden",
+    tabActiveBadge: "Aktiv",
+    cardAudioTabs: "🔊 Audio-Wiedergabe Tabs",
+    tabCountSuffix: "Tabs",
+    noAudioTabs: "Kein Tab spielt Audio ab",
+    mutedState: "🔇 Stummgeschaltet",
+    playingState: "🔊 Spielt Audio",
+    unmuteBtn: "🔊 Laut",
+    muteBtn: "🔇 Stumm",
+    cardTabGroups: "🏷️ Tab-Gruppen",
+    addActiveTab: "Aktiven Tab hinzufügen",
+    groupWork: "Arbeit",
+    groupFun: "Unterhaltung",
+    groupShop: "Einkaufen",
+    groupSocial: "Soziales",
+    groupResearch: "Recherche",
+    customGroupNamePlaceholder: "Gruppenname...",
+    addBtn: "Hinzufügen",
+    ungroupBtn: "Auflösen",
+    colorBlue: "Blau",
+    colorRed: "Rot",
+    colorGreen: "Grün",
+    colorYellow: "Gelb",
+    colorPurple: "Lila",
+    colorPink: "Rosa",
+    colorCyan: "Cyan",
+    colorOrange: "Orange",
+    colorGrey: "Grau",
+    cardPrivacy: "🛡️ Datenschutz & Tracker",
+    protectedBadge: "Geschützt",
+    trackersBlockedToday: "Heute blockierte Tracker",
+    onCurrentSite: "Auf dieser Website",
+    cardMusicIndicator: "🎵 Musik-Anzeige",
+    musicIndicatorDesc: "Zeigt Musiknoten bei Audiowiedergabe.",
+    cardPdfNotes: "📝 Textmarker & Notizen",
+    pdfNotesDesc: "Textmarker für Webseiten und PDFs.",
+    cardAutoPip: "📺 Automatisches PiP",
+    autoPipDesc: "Schwebendes Videofenster bei Tab-Wechsel.",
+    cardLinkGlow: "⚡ Offener Link Detektor",
+    linkGlowDesc: "Erkennt bereits geöffnete Links.",
+    cardOpenSound: "🔔 Tab-Öffnen-Sound",
+    cardCloseSound: "🔕 Tab-Schließen-Sound",
+    soundProfile: "Sound-Profil",
+    customSoundOpt: "📁 Eigener Sound...",
+    uploadAudioBtn: "🎵 Audiodatei wählen",
+    volumeLabel: "Lautstärke",
+    testOpenSound: "Öffnen-Sound testen 🔊",
+    testCloseSound: "Schließen-Sound testen 🔊",
+    installedPrefix: "Geladen: "
+  },
+  es: {
+    muteAll: "Silenciar Todo",
+    unmuteAll: "Reactivar Sonido",
+    cardRam: "⚡ Monitor de RAM y CPU",
+    ramUsage: "Uso de RAM",
+    cpuLoad: "Uso de CPU",
+    cores: "Núcleos",
+    ramCpuDisabled: "⚡ Monitor e Insignia Desactivados",
+    cardTabSearch: "🔍 Buscar Pestañas",
+    searchPlaceholder: "Buscar título o URL en pestañas...",
+    noResultsFound: "No se encontraron pestañas",
+    tabActiveBadge: "Activa",
+    cardAudioTabs: "🔊 Pestañas con Audio",
+    tabCountSuffix: "Pestañas",
+    noAudioTabs: "No hay pestañas reproduciendo audio",
+    mutedState: "🔇 Silenciada",
+    playingState: "🔊 Reproduciendo",
+    unmuteBtn: "🔊 Activar",
+    muteBtn: "🔇 Silenciar",
+    cardTabGroups: "🏷️ Grupos de Pestañas",
+    addActiveTab: "Añadir Pestaña Activa",
+    groupWork: "Trabajo",
+    groupFun: "Ocio",
+    groupShop: "Compras",
+    groupSocial: "Social",
+    groupResearch: "Estudio",
+    customGroupNamePlaceholder: "Nombre de Grupo...",
+    addBtn: "Añadir",
+    ungroupBtn: "Desagrupar",
+    colorBlue: "Azul",
+    colorRed: "Rojo",
+    colorGreen: "Verde",
+    colorYellow: "Amarillo",
+    colorPurple: "Morado",
+    colorPink: "Rosa",
+    colorCyan: "Cian",
+    colorOrange: "Naranja",
+    colorGrey: "Gris",
+    cardPrivacy: "🛡️ Privacidad y Rastreadores",
+    protectedBadge: "Protegido",
+    trackersBlockedToday: "Rastreadores Bloqueados Hoy",
+    onCurrentSite: "En Este Sitio",
+    cardMusicIndicator: "🎵 Indicador de Audio",
+    musicIndicatorDesc: "Muestra notas musicales en pestañas.",
+    cardPdfNotes: "📝 Resaltador y Notas",
+    pdfNotesDesc: "Herramienta para resaltar páginas y PDFs.",
+    cardAutoPip: "📺 PiP Automático",
+    autoPipDesc: "Ventana flotante de vídeo al cambiar de pestaña.",
+    cardLinkGlow: "⚡ Detector de Enlaces",
+    linkGlowDesc: "Detecta enlaces ya abiertos.",
+    cardOpenSound: "🔔 Sonido al Abrir",
+    cardCloseSound: "🔕 Sonido al Cerrar",
+    soundProfile: "Perfil de Sonido",
+    customSoundOpt: "📁 Sonido Personalizado...",
+    uploadAudioBtn: "🎵 Elegir Archivo de Audio",
+    volumeLabel: "Volumen",
+    testOpenSound: "Probar Sonido Abrir 🔊",
+    testCloseSound: "Probar Sonido Cerrar 🔊",
+    installedPrefix: "Cargado: "
+  },
+  fr: {
+    muteAll: "Couper le Son",
+    unmuteAll: "Rétablir le Son",
+    cardRam: "⚡ Moniteur RAM & CPU",
+    ramUsage: "Utilisation RAM",
+    cpuLoad: "Charge CPU",
+    cores: "Cœurs",
+    ramCpuDisabled: "⚡ Badge et Moniteur Désactivés",
+    cardTabSearch: "🔍 Rechercher des Onglets",
+    searchPlaceholder: "Rechercher titre ou URL...",
+    noResultsFound: "Aucun onglet trouvé",
+    tabActiveBadge: "Actif",
+    cardAudioTabs: "🔊 Onglets avec Audio",
+    tabCountSuffix: "Onglets",
+    noAudioTabs: "Aucun onglet ne joue de son",
+    mutedState: "🔇 En Sourdine",
+    playingState: "🔊 En Lecture",
+    unmuteBtn: "🔊 Activer",
+    muteBtn: "🔇 Couper",
+    cardTabGroups: "🏷️ Groupes d'Onglets",
+    addActiveTab: "Ajouter l'Onglet Actif",
+    groupWork: "Travail",
+    groupFun: "Divertissement",
+    groupShop: "Achats",
+    groupSocial: "Social",
+    groupResearch: "Recherche",
+    customGroupNamePlaceholder: "Nom du Groupe...",
+    addBtn: "Ajouter",
+    ungroupBtn: "Dissocier",
+    colorBlue: "Bleu",
+    colorRed: "Rouge",
+    colorGreen: "Vert",
+    colorYellow: "Jaune",
+    colorPurple: "Violet",
+    colorPink: "Rose",
+    colorCyan: "Cyan",
+    colorOrange: "Orange",
+    colorGrey: "Gris",
+    cardPrivacy: "🛡️ Confidentialité & Pisteurs",
+    protectedBadge: "Protégé",
+    trackersBlockedToday: "Pisteurs Bloqués Aujourd'hui",
+    onCurrentSite: "Sur Ce Site",
+    cardMusicIndicator: "🎵 Indicateur Musical",
+    musicIndicatorDesc: "Affiche des notes de musique lors de la lecture audio.",
+    cardPdfNotes: "📝 Surligneur & Notes",
+    pdfNotesDesc: "Outil de surlignage pour pages et PDFs.",
+    cardAutoPip: "📺 PiP Automatique",
+    autoPipDesc: "Vidéo flottante lors du changement d'onglet.",
+    cardLinkGlow: "⚡ Détecteur de Liens Ouverts",
+    linkGlowDesc: "Détecte les liens déjà ouverts.",
+    cardOpenSound: "🔔 Son d'Ouverture",
+    cardCloseSound: "🔕 Son de Fermeture",
+    soundProfile: "Profil Sonore",
+    customSoundOpt: "📁 Son Personnalisé...",
+    uploadAudioBtn: "🎵 Choisir un Fichier Audio",
+    volumeLabel: "Volume",
+    testOpenSound: "Tester Son d'Ouverture 🔊",
+    testCloseSound: "Tester Son de Fermeture 🔊",
+    installedPrefix: "Installé: "
+  }
+};
+
+let currentPopupLang = 'tr';
+
+function getPT() {
+  return popupI18n[currentPopupLang] || popupI18n.tr;
+}
+
+function applyPopupI18n(lang) {
+  currentPopupLang = lang || 'tr';
+  const t = getPT();
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    if (t[key]) el.setAttribute('placeholder', t[key]);
+  });
+
+  // Update preset button group names for current lang
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    let groupName = btn.dataset.name;
+    if (currentPopupLang === 'en' && btn.dataset.nameEn) groupName = btn.dataset.nameEn;
+    else if (currentPopupLang === 'de' && btn.dataset.nameDe) groupName = btn.dataset.nameDe;
+    else if (currentPopupLang === 'es' && btn.dataset.nameEs) groupName = btn.dataset.nameEs;
+    else if (currentPopupLang === 'fr' && btn.dataset.nameFr) groupName = btn.dataset.nameFr;
+    btn.dataset.activeName = groupName;
+  });
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Load Language first
+  const { appLang = 'tr' } = await chrome.storage.local.get('appLang');
+  applyPopupI18n(appLang);
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.appLang) {
+      applyPopupI18n(changes.appLang.newValue);
+      renderSearchResults(tabSearchInput.value.trim());
+      renderAudioTabs();
+      renderActiveGroups();
+    }
+  });
+
   // --- 1. RAM / CPU MONİTÖRÜ ---
   const ramCpuMonitorEnabled = document.getElementById('ramCpuMonitorEnabled');
   const ramCpuStatsContainer = document.getElementById('ramCpuStatsContainer');
@@ -84,13 +431,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderSearchResults(query = '') {
     searchResults.innerHTML = '';
     const q = query.toLowerCase();
+    const t = getPT();
     
     const filtered = q 
       ? allTabsCache.filter(t => (t.title && t.title.toLowerCase().includes(q)) || (t.url && t.url.toLowerCase().includes(q)))
       : allTabsCache.slice(0, 5);
 
     if (filtered.length === 0) {
-      searchResults.innerHTML = '<div class="no-results-msg">Eşleşen sekme bulunamadı</div>';
+      searchResults.innerHTML = `<div class="no-results-msg">${t.noResultsFound}</div>`;
       return;
     }
 
@@ -105,11 +453,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="tab-info-wrap">
           <img src="${escapeHtml(iconUrl)}" class="tab-favicon" onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23a1a1aa\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'">
           <div style="overflow:hidden;">
-            <div class="tab-title-text">${escapeHtml(tab.title || 'Başlıksız Sekme')}</div>
+            <div class="tab-title-text">${escapeHtml(tab.title || 'Tab')}</div>
             <div class="tab-domain-text">${escapeHtml(domain)}</div>
           </div>
         </div>
-        ${tab.active ? '<span style="font-size:10px; color:#38bdf8; font-weight:700;">Aktif</span>' : ''}
+        ${tab.active ? `<span style="font-size:10px; color:#38bdf8; font-weight:700;">${t.tabActiveBadge}</span>` : ''}
       `;
 
       item.addEventListener('click', async () => {
@@ -150,12 +498,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function renderAudioTabs() {
     const tabs = await chrome.tabs.query({});
     const audioTabs = tabs.filter(t => t.audible || (t.mutedInfo && t.mutedInfo.muted));
+    const t = getPT();
     
-    audioTabCount.textContent = `${audioTabs.length} Sekme`;
+    audioTabCount.textContent = `${audioTabs.length} ${t.tabCountSuffix}`;
     audioTabList.innerHTML = '';
 
     if (audioTabs.length === 0) {
-      audioTabList.innerHTML = '<div class="no-results-msg">Şu an ses çalan sekme yok</div>';
+      audioTabList.innerHTML = `<div class="no-results-msg">${t.noAudioTabs}</div>`;
     } else {
       audioTabs.forEach(tab => {
         const item = document.createElement('div');
@@ -167,14 +516,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div class="tab-info-wrap" style="cursor: pointer;">
             <img src="${escapeHtml(iconUrl)}" class="tab-favicon" onerror="this.style.display='none'">
             <div style="overflow:hidden;">
-              <div class="tab-title-text">${escapeHtml(tab.title || 'Sekme')}</div>
+              <div class="tab-title-text">${escapeHtml(tab.title || 'Tab')}</div>
               <div style="font-size:10px; color:${isMuted ? '#ef4444' : '#22c55e'}; font-weight:600;">
-                ${isMuted ? '🔇 Sessize Alındı' : '🔊 Ses Çalıyor'}
+                ${isMuted ? t.mutedState : t.playingState}
               </div>
             </div>
           </div>
-          <button class="audio-btn" title="${isMuted ? 'Sesi Aç' : 'Sustur'}">
-            ${isMuted ? '🔊 Aç' : '🔇 Sustur'}
+          <button class="audio-btn" title="${isMuted ? t.unmuteBtn : t.muteBtn}">
+            ${isMuted ? t.unmuteBtn : t.muteBtn}
           </button>
         `;
 
@@ -200,15 +549,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tabs = await chrome.tabs.query({});
     const audibleOrMuted = tabs.filter(t => t.audible || (t.mutedInfo && t.mutedInfo.muted));
     const allMuted = audibleOrMuted.length > 0 && audibleOrMuted.every(t => t.mutedInfo && t.mutedInfo.muted);
+    const t = getPT();
 
     if (allMuted) {
       muteAllBtn.classList.add('active-muted');
       muteAllIcon.textContent = '🔇';
-      muteAllText.textContent = 'Sesi Aç';
+      muteAllText.textContent = t.unmuteAll;
     } else {
       muteAllBtn.classList.remove('active-muted');
       muteAllIcon.textContent = '🔊';
-      muteAllText.textContent = 'Tümünü Sustur';
+      muteAllText.textContent = t.muteAll;
     }
   }
 
@@ -265,6 +615,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function renderActiveGroups() {
     if (!chrome.tabGroups) return;
     activeGroupsList.innerHTML = '';
+    const t = getPT();
     
     try {
       const [currentWin] = await chrome.windows.getCurrent();
@@ -280,10 +631,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         item.innerHTML = `
           <div style="display:flex; align-items:center; gap:6px;">
             <span class="color-dot" style="background:${dotColor};"></span>
-            <span style="font-weight:700; color:#f4f4f5;">${escapeHtml(grp.title || 'Grup')}</span>
-            <span style="color:var(--text-muted); font-size:10px;">(${groupTabs.length} sekme)</span>
+            <span style="font-weight:700; color:#f4f4f5;">${escapeHtml(grp.title || 'Group')}</span>
+            <span style="color:var(--text-muted); font-size:10px;">(${groupTabs.length} ${t.tabCountSuffix})</span>
           </div>
-          <button class="ungroup-btn">Dağıt</button>
+          <button class="ungroup-btn">${t.ungroupBtn}</button>
         `;
 
         item.querySelector('.ungroup-btn').addEventListener('click', async () => {
@@ -302,7 +653,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.querySelectorAll('.preset-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      groupActiveTab(btn.dataset.name, btn.dataset.color);
+      const name = btn.dataset.activeName || btn.dataset.name;
+      groupActiveTab(name, btn.dataset.color);
     });
   });
 
@@ -362,6 +714,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let customOpenData = settings.customOpenSoundData;
   let customCloseData = settings.customCloseSoundData;
+  const t = getPT();
 
   ramCpuMonitorEnabled.checked = settings.ramCpuMonitorEnabled !== false;
   updateRamCpuVisibility(ramCpuMonitorEnabled.checked);
@@ -374,14 +727,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   openSoundType.value = settings.openSoundType;
   openSoundVolume.value = settings.openSoundVolume;
   openVolVal.textContent = `${Math.round(settings.openSoundVolume * 100)}%`;
-  if (settings.customOpenSoundName) openFileName.textContent = `Yüklü: ${settings.customOpenSoundName}`;
+  if (settings.customOpenSoundName) openFileName.textContent = `${t.installedPrefix}${settings.customOpenSoundName}`;
   updateCustomBox(openSoundType.value, openCustomBox);
 
   closeSoundEnabled.checked = settings.closeSoundEnabled;
   closeSoundType.value = settings.closeSoundType;
   closeSoundVolume.value = settings.closeSoundVolume;
   closeVolVal.textContent = `${Math.round(settings.closeSoundVolume * 100)}%`;
-  if (settings.customCloseSoundName) closeFileName.textContent = `Yüklü: ${settings.customCloseSoundName}`;
+  if (settings.customCloseSoundName) closeFileName.textContent = `${t.installedPrefix}${settings.customCloseSoundName}`;
   updateCustomBox(closeSoundType.value, closeCustomBox);
 
   function updateCustomBox(val, boxEl) {
@@ -420,21 +773,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     await chrome.storage.local.set({ openSoundType: openSoundType.value });
   });
   openSoundVolume.addEventListener('input', async () => {
-    const val = parseFloat(openSoundVolume.value);
-    openVolVal.textContent = `${Math.round(val * 100)}%`;
-    await chrome.storage.local.set({ openSoundVolume: val });
+    openVolVal.textContent = `${Math.round(openSoundVolume.value * 100)}%`;
+    await chrome.storage.local.set({ openSoundVolume: parseFloat(openSoundVolume.value) });
   });
   openUploadBtn.addEventListener('click', () => openFileInput.click());
   openFileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = async (ev) => {
-      customOpenData = ev.target.result;
-      openFileName.textContent = `Yüklü: ${file.name}`;
+    reader.onload = async () => {
+      customOpenData = reader.result;
+      const customOpenName = file.name;
+      openFileName.textContent = `${getPT().installedPrefix}${customOpenName}`;
       await chrome.storage.local.set({
         customOpenSoundData: customOpenData,
-        customOpenSoundName: file.name
+        customOpenSoundName: customOpenName
       });
     };
     reader.readAsDataURL(file);
@@ -445,7 +798,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       soundType: openSoundType.value,
       volume: parseFloat(openSoundVolume.value),
       customData: customOpenData
-    });
+    }).catch(() => {});
   });
 
   // Kapanış Sesi
@@ -457,21 +810,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     await chrome.storage.local.set({ closeSoundType: closeSoundType.value });
   });
   closeSoundVolume.addEventListener('input', async () => {
-    const val = parseFloat(closeSoundVolume.value);
-    closeVolVal.textContent = `${Math.round(val * 100)}%`;
-    await chrome.storage.local.set({ closeSoundVolume: val });
+    closeVolVal.textContent = `${Math.round(closeSoundVolume.value * 100)}%`;
+    await chrome.storage.local.set({ closeSoundVolume: parseFloat(closeSoundVolume.value) });
   });
   closeUploadBtn.addEventListener('click', () => closeFileInput.click());
   closeFileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = async (ev) => {
-      customCloseData = ev.target.result;
-      closeFileName.textContent = `Yüklü: ${file.name}`;
+    reader.onload = async () => {
+      customCloseData = reader.result;
+      const customCloseName = file.name;
+      closeFileName.textContent = `${getPT().installedPrefix}${customCloseName}`;
       await chrome.storage.local.set({
         customCloseSoundData: customCloseData,
-        customCloseSoundName: file.name
+        customCloseSoundName: customCloseName
       });
     };
     reader.readAsDataURL(file);
@@ -482,12 +835,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       soundType: closeSoundType.value,
       volume: parseFloat(closeSoundVolume.value),
       customData: customCloseData
-    });
+    }).catch(() => {});
   });
 
-  // İlk yüklemeler
-  await loadAllTabs();
-  await renderAudioTabs();
-  await updateMasterMuteState();
-  await renderActiveGroups();
+  // Başlangıç Listelerini Doldur
+  loadAllTabs();
+  renderAudioTabs();
+  renderActiveGroups();
+  updateMasterMuteState();
 });
