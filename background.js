@@ -161,8 +161,12 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 
   if (changes.ramCpuMonitorEnabled) {
     if (!changes.ramCpuMonitorEnabled.newValue) {
-      chrome.action.setBadgeText({ text: '' });
+      setBadgeSafely('', '');
+      lastBadgeText = '';
+      lastBadgeColor = '';
     } else {
+      lastBadgeText = '';
+      lastBadgeColor = '';
       updateSystemMonitor();
     }
   }

@@ -3,13 +3,28 @@
 document.addEventListener('DOMContentLoaded', async () => {
   // --- 1. RAM / CPU MONİTÖRÜ ---
   const ramCpuMonitorEnabled = document.getElementById('ramCpuMonitorEnabled');
+  const ramCpuStatsContainer = document.getElementById('ramCpuStatsContainer');
+  const ramCpuDisabledMsg = document.getElementById('ramCpuDisabledMsg');
   const ramStatText = document.getElementById('ramStatText');
   const ramBarFill = document.getElementById('ramBarFill');
   const cpuStatText = document.getElementById('cpuStatText');
   const cpuBarFill = document.getElementById('cpuBarFill');
   const cpuCoresText = document.getElementById('cpuCoresText');
 
+  function updateRamCpuVisibility(enabled) {
+    if (ramCpuStatsContainer && ramCpuDisabledMsg) {
+      if (enabled) {
+        ramCpuStatsContainer.style.display = 'block';
+        ramCpuDisabledMsg.style.display = 'none';
+      } else {
+        ramCpuStatsContainer.style.display = 'none';
+        ramCpuDisabledMsg.style.display = 'block';
+      }
+    }
+  }
+
   async function updateSysStatsUI() {
+    if (ramCpuMonitorEnabled && !ramCpuMonitorEnabled.checked) return;
     try {
       const stats = await chrome.runtime.sendMessage({ type: 'GET_SYSTEM_STATS' });
       if (stats) {
@@ -348,7 +363,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   let customOpenData = settings.customOpenSoundData;
   let customCloseData = settings.customCloseSoundData;
 
-  ramCpuMonitorEnabled.checked = settings.ramCpuMonitorEnabled;
+  ramCpuMonitorEnabled.checked = settings.ramCpuMonitorEnabled !== false;
+  updateRamCpuVisibility(ramCpuMonitorEnabled.checked);
   musicIndicatorEnabled.checked = settings.musicIndicatorEnabled;
   pdfNotesEnabled.checked = settings.pdfNotesEnabled;
   autoPipEnabled.checked = settings.autoPipEnabled;
@@ -375,7 +391,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Event Listeners
   ramCpuMonitorEnabled.addEventListener('change', async () => {
-    await chrome.storage.local.set({ ramCpuMonitorEnabled: ramCpuMonitorEnabled.checked });
+    const isChecked = ramCpuMonitorEnabled.checked;
+    updateRamCpuVisibility(isChecked);
+    await chrome.storage.local.set({ ramCpuMonitorEnabled: isChecked });
+    if (isChecked) {
+      updateSysStatsUI();
+    }
   });
   musicIndicatorEnabled.addEventListener('change', async () => {
     await chrome.storage.local.set({ musicIndicatorEnabled: musicIndicatorEnabled.checked });

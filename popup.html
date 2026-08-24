@@ -485,7 +485,7 @@
   </header>
 
   <!-- 1. RAM / CPU Monitörü -->
-  <div class="card">
+  <div class="card" id="ramCpuCard">
     <div class="card-header">
       <span class="card-title">⚡ RAM & CPU Monitörü</span>
       <label class="switch">
@@ -493,19 +493,24 @@
         <span class="slider"></span>
       </label>
     </div>
-    <div class="stat-row">
-      <span>RAM Kullanımı</span>
-      <span id="ramStatText" style="font-weight:700;">-- / --</span>
+    <div id="ramCpuStatsContainer">
+      <div class="stat-row">
+        <span>RAM Kullanımı</span>
+        <span id="ramStatText" style="font-weight:700;">-- / --</span>
+      </div>
+      <div class="stat-bar-bg">
+        <div class="stat-bar-fill" id="ramBarFill"></div>
+      </div>
+      <div class="stat-row">
+        <span>CPU Yükü (<span id="cpuCoresText">4</span> Çekirdek)</span>
+        <span id="cpuStatText" style="font-weight:700;">0%</span>
+      </div>
+      <div class="stat-bar-bg">
+        <div class="stat-bar-fill" id="cpuBarFill" style="background:#38bdf8; width:10%;"></div>
+      </div>
     </div>
-    <div class="stat-bar-bg">
-      <div class="stat-bar-fill" id="ramBarFill"></div>
-    </div>
-    <div class="stat-row">
-      <span>CPU Yükü (<span id="cpuCoresText">4</span> Çekirdek)</span>
-      <span id="cpuStatText" style="font-weight:700;">0%</span>
-    </div>
-    <div class="stat-bar-bg">
-      <div class="stat-bar-fill" id="cpuBarFill" style="background:#38bdf8; width:10%;"></div>
+    <div id="ramCpuDisabledMsg" style="display: none; font-size: 11.5px; color: var(--text-muted); text-align: center; padding: 12px 0; background: #141417; border-radius: 6px; margin-top: 4px;">
+      ⚡ Canlı Rozet ve Monitör Devre Dışı
     </div>
   </div>
 
